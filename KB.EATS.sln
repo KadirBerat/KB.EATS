@@ -13,7 +13,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleData", "SampleData", "{D8C0F857-58CB-4545-84ED-F300EF8AE87E}"
 	ProjectSection(SolutionItems) = preProject
 		SampleData\27-10-2023_12-25-19.sampledata = SampleData\27-10-2023_12-25-19.sampledata
+		SampleData\27-10-2023_14-45-52.sampledata = SampleData\27-10-2023_14-45-52.sampledata
+		SampleData\27-10-2023_14-45-52_Modified.sampledata = SampleData\27-10-2023_14-45-52_Modified.sampledata
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KB.EATS.DataAnalysis", "KB.EATS.DataAnalysis\KB.EATS.DataAnalysis.csproj", "{D6A710A0-FA53-494F-8AC1-2FBFE741E39F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KB.EATS.DataAnalysis.Test", "KB.EATS.DataAnalysis.Test\KB.EATS.DataAnalysis.Test.csproj", "{28ECAEAF-3DBE-44CE-BB86-342740EF69FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +31,14 @@ Global
 		{0F4D394B-C32E-46C1-86E9-96199AB77505}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F4D394B-C32E-46C1-86E9-96199AB77505}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F4D394B-C32E-46C1-86E9-96199AB77505}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6A710A0-FA53-494F-8AC1-2FBFE741E39F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6A710A0-FA53-494F-8AC1-2FBFE741E39F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6A710A0-FA53-494F-8AC1-2FBFE741E39F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6A710A0-FA53-494F-8AC1-2FBFE741E39F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28ECAEAF-3DBE-44CE-BB86-342740EF69FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28ECAEAF-3DBE-44CE-BB86-342740EF69FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28ECAEAF-3DBE-44CE-BB86-342740EF69FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28ECAEAF-3DBE-44CE-BB86-342740EF69FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

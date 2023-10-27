@@ -1,4 +1,7 @@
-﻿using System.Diagnostics;
+﻿using KB.EATS.DataAnalysis;
+using System.Diagnostics;
+using System.IO.Enumeration;
+using System.Reflection;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace KB.EATS.SampleDataGenerator
@@ -7,6 +10,7 @@ namespace KB.EATS.SampleDataGenerator
     {
         private static Random random = new Random();
         private static string FolderPath = @$"{Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName}\SampleData";
+        private static string sampledataFileName = "";
 
         static void Main(string[] args)
         {
@@ -17,21 +21,20 @@ namespace KB.EATS.SampleDataGenerator
             DateTime startDate = new DateTime(2020, 1, 1);
             DateTime EndDate = new DateTime(2021, 3, 31);
 
-            int min = 1;
-            int max = 9780;
             int anomaly = random.Next(100, 500);
+            List<int> anomalies = DataSelector(1, 9780, anomaly);
 
-            List<int> anomalies = new List<int>();
-            while (anomalies.Count < anomaly)
-            {
-                int rastgeleSayi = random.Next(min, max + 1);
+            //List<int> anomalies = new List<int>();
+            //while (anomalies.Count < anomaly)
+            //{
+            //    int rastgeleSayi = random.Next(min, max + 1);
 
-                if (!anomalies.Contains(rastgeleSayi))
-                {
-                    anomalies.Add(rastgeleSayi);
-                }
-            }
-            anomalies.Sort();
+            //    if (!anomalies.Contains(rastgeleSayi))
+            //    {
+            //        anomalies.Add(rastgeleSayi);
+            //    }
+            //}
+            //anomalies.Sort();
 
             #region Fisher–Yates shuffle
             //Sıra verisi
@@ -87,6 +90,8 @@ namespace KB.EATS.SampleDataGenerator
             DateTime shiftEndM90 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 15, 30, 0);
             DateTime shiftEndM120 = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 15, 00, 0);
             #endregion
+
+            int dayCounter = 0;
 
             int counter = 0;
             int counterAEn = 0;
@@ -167,13 +172,10 @@ namespace KB.EATS.SampleDataGenerator
                         sampleData.Add(data);
                         counter++;
                     }
+
+                    dayCounter++;
                 }
             }
-
-
-            //Console.WriteLine(counter.ToString());
-
-            //Console.WriteLine(anomaly.ToString());
 
             //foreach (int sayi in anomalies)
             //{
@@ -182,18 +184,67 @@ namespace KB.EATS.SampleDataGenerator
 
             //Console.WriteLine(Environment.NewLine);
 
-            //Console.WriteLine(counterAEn.ToString());
-            //Console.WriteLine(counterAEx.ToString());
-
-
+            Console.WriteLine($"Toplam Gün Sayısı: {dayCounter.ToString()}");
+            Console.WriteLine($"Toplam Veri Sayısı: {sampleData.Count.ToString()}");
+            Console.WriteLine($"Toplam Anomali Sayısı: {anomaly.ToString()}");
+            Console.WriteLine($"Giriş Anomali Sayısı: {counterAEn.ToString()}");
+            Console.WriteLine($"Çıkış Anomali Sayısı: {counterAEx.ToString()}");
             DirectoryControl();
-            string filePath = FileControl();
+            string filePath = FileControl(false);
             if (filePath != "#!")
             {
                 File.WriteAllLines(filePath, sampleData.ToArray());
+
+                SampleDataConversion sampleDataConversion = new SampleDataConversion(filePath);
+                List<DataAnalysis.Models.ShiftDataModelSimplified> data = sampleDataConversion.GetSimplified();
+                int p5 = (5 * data.Count) / 100;
+                int p15 = (15 * data.Count) / 100;
+                int absenteeism = random.Next(p5, p15);
+                List<int> selectedAbsences = DataSelector(1, data.Count, absenteeism);
+
+                List<string> modifiedData = new List<string>();
+
+                counter = 0;
+                foreach (var item in data)
+                {
+                    if (!selectedAbsences.Contains(counter))
+                    {
+                        string entryLineData = $"{item.Entry.FullDate.ToString("dd-MM-yyyy_HH-mm-ss")}_{item.Employee}";
+                        string exitLineData = $"{item.Exit.FullDate.ToString("dd-MM-yyyy_HH-mm-ss")}_{item.Employee}";
+                        modifiedData.Add(entryLineData);
+                        modifiedData.Add(exitLineData);
+                    }
+                    counter++;
+                }
+
+                string modifiedFilePath = FileControl(true);
+                File.WriteAllLines(modifiedFilePath, modifiedData.ToArray());
+
+                Console.WriteLine($"Toplam Devamsızlık Sayısı: {absenteeism}");
+                Console.WriteLine($"Son Veri Sayısı: {modifiedData.Count().ToString()}");
+
+                Console.WriteLine($"Son Veri Dosyası: {sampledataFileName}_Modified.sampledata");
+
             }
 
+            Console.WriteLine("Tamamlandı!");
             Console.ReadKey();
+        }
+
+        private static List<int> DataSelector(int min, int max, int count)
+        {
+            List<int> selectedDataList = new List<int>();
+            while (selectedDataList.Count < count)
+            {
+                int rastgeleSayi = random.Next(min, max + 1);
+
+                if (!selectedDataList.Contains(rastgeleSayi))
+                {
+                    selectedDataList.Add(rastgeleSayi);
+                }
+            }
+            selectedDataList.Sort();
+            return selectedDataList;
         }
 
         private static void DirectoryControl()
@@ -209,24 +260,47 @@ namespace KB.EATS.SampleDataGenerator
             }
         }
 
-        private static string FileControl()
+        private static string FileControl(bool isModifiedFile)
         {
-            try
+            if (isModifiedFile)
             {
-                string date = DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss");
-                string fileName = $"{date}.sampledata";
-                string filePath = $@"{FolderPath}\{fileName}";
-                bool fileCheck = File.Exists(filePath);
-                if (fileCheck == false)
+                try
                 {
-                    File.Create(filePath).Close();
+                    string fileName = $"{sampledataFileName}_Modified.sampledata";
+                    string filePath = $@"{FolderPath}\{fileName}";
+                    bool fileCheck = File.Exists(filePath);
+                    if (fileCheck == false)
+                    {
+                        File.Create(filePath).Close();
+                    }
+                    return filePath;
                 }
-                return filePath;
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return "#!";
+                } 
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine(ex.Message);
-                return "#!";
+                try
+                {
+                    string date = DateTime.Now.ToString("dd-MM-yyyy_HH-mm-ss");
+                    sampledataFileName = date;
+                    string fileName = $"{date}.sampledata";
+                    string filePath = $@"{FolderPath}\{fileName}";
+                    bool fileCheck = File.Exists(filePath);
+                    if (fileCheck == false)
+                    {
+                        File.Create(filePath).Close();
+                    }
+                    return filePath;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return "#!";
+                }
             }
         }
 
