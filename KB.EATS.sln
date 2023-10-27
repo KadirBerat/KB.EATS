@@ -5,6 +5,16 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KB.EATS.SampleDataGenerator", "KB.EATS.SampleDataGenerator\KB.EATS.SampleDataGenerator.csproj", "{0F4D394B-C32E-46C1-86E9-96199AB77505}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{1474B5D4-41F6-456C-98A8-7857773A50D7}"
+	ProjectSection(SolutionItems) = preProject
+		Notes\CompanyStructure.txt = Notes\CompanyStructure.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleData", "SampleData", "{D8C0F857-58CB-4545-84ED-F300EF8AE87E}"
+	ProjectSection(SolutionItems) = preProject
+		SampleData\27-10-2023_12-25-19.sampledata = SampleData\27-10-2023_12-25-19.sampledata
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

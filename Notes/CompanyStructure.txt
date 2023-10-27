@@ -1,0 +1,12 @@
+Personel sayýsý: 15
+Çalýþma saatleri: 08:00 - 17:00
+Çalýþma günleri: Pazartesi, Salý, Çarþamba, Perþembe, Cuma
+
+Veri formatý: 07-10-2023_10-50-45_Employee-1
+
+Çalýþanýn ilk kaydý giriþ ikinci kaydý çýkýþ verisi olacak.
+Bu iþletmede kartla giriþ çýkýþ yapýldýðý ve kart okutulmadan giriþ ve çýkýþ yapýlamadýðý varsayýlýyor.
+
+Örnek veri aralýðý: 1 Yýl 3 Ay
+Baþlama Tarihi: 01-01-2020
+Bitiþ Tarihi: 31-03-2021
