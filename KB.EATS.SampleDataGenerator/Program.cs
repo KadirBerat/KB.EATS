@@ -1,4 +1,6 @@
 ﻿using KB.EATS.DataAnalysis;
+using KB.EATS.DataAnalysis.Models;
+using KB.EATS.SampleDataGenerator.Models;
 using System.Diagnostics;
 using System.IO.Enumeration;
 using System.Reflection;
@@ -11,6 +13,7 @@ namespace KB.EATS.SampleDataGenerator
         private static Random random = new Random();
         private static string FolderPath = @$"{Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName}\SampleData";
         private static string sampledataFileName = "";
+        private static KbEatsContext db = new KbEatsContext();
 
         static void Main(string[] args)
         {
@@ -189,6 +192,8 @@ namespace KB.EATS.SampleDataGenerator
             Console.WriteLine($"Toplam Anomali Sayısı: {anomaly.ToString()}");
             Console.WriteLine($"Giriş Anomali Sayısı: {counterAEn.ToString()}");
             Console.WriteLine($"Çıkış Anomali Sayısı: {counterAEx.ToString()}");
+            string modifiedFilePath = string.Empty;
+            List<string> modifiedData = new List<string>();
             DirectoryControl();
             string filePath = FileControl(false);
             if (filePath != "#!")
@@ -201,8 +206,6 @@ namespace KB.EATS.SampleDataGenerator
                 int p15 = (15 * data.Count) / 100;
                 int absenteeism = random.Next(p5, p15);
                 List<int> selectedAbsences = DataSelector(1, data.Count, absenteeism);
-
-                List<string> modifiedData = new List<string>();
 
                 counter = 0;
                 foreach (var item in data)
@@ -217,7 +220,7 @@ namespace KB.EATS.SampleDataGenerator
                     counter++;
                 }
 
-                string modifiedFilePath = FileControl(true);
+                modifiedFilePath = FileControl(true);
                 File.WriteAllLines(modifiedFilePath, modifiedData.ToArray());
 
                 Console.WriteLine($"Toplam Devamsızlık Sayısı: {absenteeism}");
@@ -227,7 +230,55 @@ namespace KB.EATS.SampleDataGenerator
 
             }
 
-            Console.WriteLine("Tamamlandı!");
+            Console.WriteLine("Tamamlandı!\n\n");
+
+            Console.WriteLine("Veriler veritabanı'na kayıt edilsin mi? (Y/N)");
+            ConsoleKeyInfo key = Console.ReadKey(true);
+            if (key.Key == ConsoleKey.Y)
+            {
+                foreach (var employee in employees)
+                {
+                    db.Users.Add(new User
+                    {
+                        FirstName = employee.Split('-')[0],
+                        LastName = employee.Split("-")[1],
+                        IsActive = true,
+                        IsAdmin = false,
+                        Password = "1234",
+                        RegisterDate = DateTime.Now,
+                        Username = employee
+                    });
+                }
+                db.SaveChanges();
+
+                SampleDataConversion sdc = new SampleDataConversion(modifiedFilePath);
+                List<ShiftDataModelSimplified> modifiedDataList = sdc.GetSimplified();
+                foreach (var data in modifiedDataList)
+                {
+                    db.Users.FirstOrDefault(x => x.Username == data.Employee).UserShifts.Add(new UserShift
+                    {
+                        Date = data.Date,
+                        ShiftData = new List<ShiftData>()
+                        {
+                             new ShiftData {
+                                 Date = data.Entry.Date.ToDateTime(data.Entry.Time),
+                                 Time = data.Entry.Time.ToTimeSpan(),
+                                 FullDate = data.Entry.FullDate
+                             },
+                             new ShiftData {
+                                 Date = data.Exit.Date.ToDateTime(data.Exit.Time),
+                                 Time = data.Exit.Time.ToTimeSpan(),
+                                 FullDate = data.Exit.FullDate
+                             }
+                        }
+                    });
+
+                }
+                db.SaveChanges();
+
+                Console.WriteLine("Veriler veritabanı'na kayıt edildi!");
+            }
+
             Console.ReadKey();
         }
 
@@ -279,7 +330,7 @@ namespace KB.EATS.SampleDataGenerator
                 {
                     Console.WriteLine(ex.Message);
                     return "#!";
-                } 
+                }
             }
             else
             {

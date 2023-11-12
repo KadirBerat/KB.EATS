@@ -12,6 +12,11 @@ namespace KB.EATS.DataAnalysis.Test
             SampleDataConversion sampleDataConversion = new SampleDataConversion(FilePath);
             List<Models.ShiftDataModel> data = sampleDataConversion.Get();
             List<ShiftDataModelSimplified> simplifiedData = sampleDataConversion.GetSimplified();
+
+            WorkingHourCalculation whc = new WorkingHourCalculation(simplifiedData);
+            List<CalculatedShiftDataModel> calculatedModle = whc.Get();
+
+
             Console.ReadKey();
         }
     }
