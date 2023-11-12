@@ -97,8 +97,8 @@ namespace KB.EATS.SampleDataGenerator
             int dayCounter = 0;
 
             int counter = 0;
-            int counterAEn = 0;
-            int counterAEx = 0;
+            int counterAEn = 0; //anomali giriş
+            int counterAEx = 0; //anomali çıkış
 
             for (DateTime date = startDate; date <= EndDate; date = date.AddDays(1))
             {
@@ -200,13 +200,17 @@ namespace KB.EATS.SampleDataGenerator
             {
                 File.WriteAllLines(filePath, sampleData.ToArray());
 
+                //oluşturulan ham verilerin istenilen yapıya getirilmesi
                 SampleDataConversion sampleDataConversion = new SampleDataConversion(filePath);
                 List<DataAnalysis.Models.ShiftDataModelSimplified> data = sampleDataConversion.GetSimplified();
-                int p5 = (5 * data.Count) / 100;
-                int p15 = (15 * data.Count) / 100;
-                int absenteeism = random.Next(p5, p15);
-                List<int> selectedAbsences = DataSelector(1, data.Count, absenteeism);
 
+                //devamsızlık ekleme
+                int p5 = (5 * data.Count) / 100; //%5
+                int p15 = (15 * data.Count) / 100; //%15
+                int absenteeism = random.Next(p5, p15); //%5-15 arası rastgele değer
+                List<int> selectedAbsences = DataSelector(1, data.Count, absenteeism); //devamsızlık verisi
+
+                //devamsızlık durumuna göre veri setinin düzenlenmesi
                 counter = 0;
                 foreach (var item in data)
                 {
@@ -234,8 +238,10 @@ namespace KB.EATS.SampleDataGenerator
 
             Console.WriteLine("Veriler veritabanı'na kayıt edilsin mi? (Y/N)");
             ConsoleKeyInfo key = Console.ReadKey(true);
+            //Veri setini veritabanına kaydetme işlemi
             if (key.Key == ConsoleKey.Y)
             {
+                //çalışanı ekleme
                 foreach (var employee in employees)
                 {
                     db.Users.Add(new User
@@ -251,6 +257,7 @@ namespace KB.EATS.SampleDataGenerator
                 }
                 db.SaveChanges();
 
+                //çalışanın giriş çıkış verilerinin kaydedilmesi
                 SampleDataConversion sdc = new SampleDataConversion(modifiedFilePath);
                 List<ShiftDataModelSimplified> modifiedDataList = sdc.GetSimplified();
                 foreach (var data in modifiedDataList)
@@ -282,6 +289,7 @@ namespace KB.EATS.SampleDataGenerator
             Console.ReadKey();
         }
 
+        //Veri setine devamsızlık eklemek için rastgele veri seçimi
         private static List<int> DataSelector(int min, int max, int count)
         {
             List<int> selectedDataList = new List<int>();
@@ -298,6 +306,7 @@ namespace KB.EATS.SampleDataGenerator
             return selectedDataList;
         }
 
+        #region Dosya yolu kontrolü
         private static void DirectoryControl()
         {
             try
@@ -353,8 +362,10 @@ namespace KB.EATS.SampleDataGenerator
                     return "#!";
                 }
             }
-        }
+        } 
+        #endregion
 
+        //çalışanların rastgele sıralanması
         static List<int> CreateSequence()
         {
             return Enumerable.Range(0, 15).OrderBy(x => Guid.NewGuid()).ToList();

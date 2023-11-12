@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KB.EATS.SampleDataGenerator", "KB.EATS.SampleDataGenerator\KB.EATS.SampleDataGenerator.csproj", "{0F4D394B-C32E-46C1-86E9-96199AB77505}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KB.EATS.SampleDataGenerator", "KB.EATS.SampleDataGenerator\KB.EATS.SampleDataGenerator.csproj", "{0F4D394B-C32E-46C1-86E9-96199AB77505}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{1474B5D4-41F6-456C-98A8-7857773A50D7}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,9 +17,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleData", "SampleData", 
 		SampleData\27-10-2023_14-45-52_Modified.sampledata = SampleData\27-10-2023_14-45-52_Modified.sampledata
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KB.EATS.DataAnalysis", "KB.EATS.DataAnalysis\KB.EATS.DataAnalysis.csproj", "{D6A710A0-FA53-494F-8AC1-2FBFE741E39F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KB.EATS.DataAnalysis", "KB.EATS.DataAnalysis\KB.EATS.DataAnalysis.csproj", "{D6A710A0-FA53-494F-8AC1-2FBFE741E39F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KB.EATS.DataAnalysis.Test", "KB.EATS.DataAnalysis.Test\KB.EATS.DataAnalysis.Test.csproj", "{28ECAEAF-3DBE-44CE-BB86-342740EF69FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KB.EATS.DataAnalysis.Test", "KB.EATS.DataAnalysis.Test\KB.EATS.DataAnalysis.Test.csproj", "{28ECAEAF-3DBE-44CE-BB86-342740EF69FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KB.EATS.WebApi", "KB.EATS.WebApi\KB.EATS.WebApi.csproj", "{A07477BC-856F-4408-9EDE-81EAE49D802B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{28ECAEAF-3DBE-44CE-BB86-342740EF69FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28ECAEAF-3DBE-44CE-BB86-342740EF69FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28ECAEAF-3DBE-44CE-BB86-342740EF69FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A07477BC-856F-4408-9EDE-81EAE49D802B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A07477BC-856F-4408-9EDE-81EAE49D802B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A07477BC-856F-4408-9EDE-81EAE49D802B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A07477BC-856F-4408-9EDE-81EAE49D802B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
