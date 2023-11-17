@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace KB.EATS.WebApi.Models;
+namespace KB.EATS.WebApi.Models.Entities;
 
 public partial class Day
 {
@@ -9,7 +9,7 @@ public partial class Day
 
     public int WeekId { get; set; }
 
-    public byte? Day1 { get; set; }
+    public byte? DayValue { get; set; }
 
     public DateTime? EntryTime { get; set; }
 

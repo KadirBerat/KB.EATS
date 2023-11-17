@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace KB.EATS.WebApi.Models;
+namespace KB.EATS.WebApi.Models.Entities;
 
 public partial class Year
 {
@@ -9,7 +9,7 @@ public partial class Year
 
     public int UserStatisticId { get; set; }
 
-    public short? Year1 { get; set; }
+    public short? YearValue { get; set; }
 
     public byte? TotalAbsenteeism { get; set; }
 

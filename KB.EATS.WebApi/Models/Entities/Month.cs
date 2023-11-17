@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace KB.EATS.WebApi.Models;
+namespace KB.EATS.WebApi.Models.Entities;
 
 public partial class Month
 {
@@ -9,7 +9,7 @@ public partial class Month
 
     public int YearsId { get; set; }
 
-    public byte? Month1 { get; set; }
+    public byte? MonthValue { get; set; }
 
     public byte? TotalAbsenteeism { get; set; }
 

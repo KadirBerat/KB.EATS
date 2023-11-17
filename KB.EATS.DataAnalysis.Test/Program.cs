@@ -20,7 +20,34 @@ namespace KB.EATS.DataAnalysis.Test
             //List<CalculatedShiftDataModel> calculatedModle = whc.Get();
 
 
+            DateTime date = new DateTime(2023, 11, 13);
+            int val = GetWeekNumberOfMonth(date);
+
             Console.ReadKey();
+        }
+
+        static int GetWeekNumberOfMonth(DateTime date)
+        {
+            DateTime firstDayOfMonth = new DateTime(date.Year, date.Month, 1);
+
+            // Hesaplama için pazartesi gününü referans alıyoruz
+            DayOfWeek firstDayOfWeek = DayOfWeek.Monday;
+
+            // İlk günün haftasını alıyoruz
+            int weekNumber = (date.Day + GetDayOfWeekOffset(firstDayOfMonth, firstDayOfWeek) - 1) / 7 + 1;
+
+            return weekNumber;
+        }
+
+        static int GetDayOfWeekOffset(DateTime date, DayOfWeek firstDayOfWeek)
+        {
+            int offset = date.DayOfWeek - firstDayOfWeek;
+            if (offset < 0)
+            {
+                // Haftanın başından önceki günleri bir önceki haftaya dahil etmek için
+                offset += 7;
+            }
+            return offset;
         }
     }
 }

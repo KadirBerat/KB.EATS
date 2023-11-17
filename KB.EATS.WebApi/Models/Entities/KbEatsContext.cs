@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace KB.EATS.WebApi.Models;
+namespace KB.EATS.WebApi.Models.Entities;
 
 public partial class KbEatsContext : DbContext
 {
@@ -39,7 +39,6 @@ public partial class KbEatsContext : DbContext
     {
         modelBuilder.Entity<Day>(entity =>
         {
-            entity.Property(e => e.Day1).HasColumnName("Day");
             entity.Property(e => e.EntryTime).HasColumnType("smalldatetime");
             entity.Property(e => e.ExitTime).HasColumnType("smalldatetime");
 
@@ -51,8 +50,6 @@ public partial class KbEatsContext : DbContext
 
         modelBuilder.Entity<Month>(entity =>
         {
-            entity.Property(e => e.Month1).HasColumnName("Month");
-
             entity.HasOne(d => d.Years).WithMany(p => p.Months)
                 .HasForeignKey(d => d.YearsId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -92,16 +89,16 @@ public partial class KbEatsContext : DbContext
 
         modelBuilder.Entity<UserStatistic>(entity =>
         {
-            entity.HasOne(d => d.User).WithMany(p => p.UserStatistics)
-                .HasForeignKey(d => d.UserId)
+            entity.Property(e => e.UserStatisticId).ValueGeneratedNever();
+
+            entity.HasOne(d => d.UserStatisticNavigation).WithOne(p => p.UserStatistic)
+                .HasForeignKey<UserStatistic>(d => d.UserStatisticId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_UserStatistics_Users");
+                .HasConstraintName("FK_UserStatistics_Users1");
         });
 
         modelBuilder.Entity<Week>(entity =>
         {
-            entity.Property(e => e.Week1).HasColumnName("Week");
-
             entity.HasOne(d => d.Month).WithMany(p => p.Weeks)
                 .HasForeignKey(d => d.MonthId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -111,8 +108,6 @@ public partial class KbEatsContext : DbContext
         modelBuilder.Entity<Year>(entity =>
         {
             entity.HasKey(e => e.YearsId);
-
-            entity.Property(e => e.Year1).HasColumnName("Year");
 
             entity.HasOne(d => d.UserStatistic).WithMany(p => p.Years)
                 .HasForeignKey(d => d.UserStatisticId)

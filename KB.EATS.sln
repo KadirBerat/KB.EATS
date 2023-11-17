@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KB.EATS.DataAnalysis", "KB.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KB.EATS.DataAnalysis.Test", "KB.EATS.DataAnalysis.Test\KB.EATS.DataAnalysis.Test.csproj", "{28ECAEAF-3DBE-44CE-BB86-342740EF69FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KB.EATS.WebApi", "KB.EATS.WebApi\KB.EATS.WebApi.csproj", "{A07477BC-856F-4408-9EDE-81EAE49D802B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KB.EATS.WebApi", "KB.EATS.WebApi\KB.EATS.WebApi.csproj", "{A07477BC-856F-4408-9EDE-81EAE49D802B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

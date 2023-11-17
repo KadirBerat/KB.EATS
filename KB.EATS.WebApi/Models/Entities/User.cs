@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace KB.EATS.WebApi.Models;
+namespace KB.EATS.WebApi.Models.Entities;
 
 public partial class User
 {
@@ -23,5 +23,5 @@ public partial class User
 
     public virtual ICollection<UserShift> UserShifts { get; set; } = new List<UserShift>();
 
-    public virtual ICollection<UserStatistic> UserStatistics { get; set; } = new List<UserStatistic>();
+    public virtual UserStatistic? UserStatistic { get; set; }
 }

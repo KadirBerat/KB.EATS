@@ -27,7 +27,6 @@ namespace KB.EATS.WebApi
 
             app.UseAuthorization();
 
-
             app.MapControllers();
 
             app.Run();
