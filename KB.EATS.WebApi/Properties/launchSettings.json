@@ -37,7 +37,7 @@
         "ASPNETCORE_URLS": "https://localhost:7019;http://localhost:5063"
       },
       "distributionName": ""
-    },
+    }, //Projenin yerel iis servisi üzerinde çalışması için aşağıdaki kodu ekledim.
     "Local IIS": {
       "commandName": "IIS",
       "launchBrowser": true,
@@ -51,7 +51,7 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
-    "iis": {
+    "iis": { //Projenin yerel iis servisi üzerinde çalışması için aşağıdaki kodu ekledim.
       "applicationUrl": "https://localhost/eats-api",
       "sslPort": 0
     },

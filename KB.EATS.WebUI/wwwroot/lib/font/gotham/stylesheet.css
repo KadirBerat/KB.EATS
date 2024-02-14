@@ -1,0 +1,54 @@
+@font-face {
+    font-family: 'gothambook';
+    src: url('GothamTR-Book.woff2') format('woff2'),
+        url('GothamTR-Book.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'gothambold';
+    src: url('GothamTR-Bold.woff2') format('woff2'),
+        url('GothamTR-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'gothambolditalic';
+    src: url('GothamTR-BoldItalic.woff2') format('woff2'),
+        url('GothamTR-BoldItalic.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'gothambookitalic';
+    src: url('GothamTR-BookItalic.woff2') format('woff2'),
+        url('GothamTR-BookItalic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'gothammediumitalic';
+    src: url('GothamTR-MediumItalic.woff2') format('woff2'),
+        url('GothamTR-MediumItalic.woff') format('woff');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'gothammedium';
+    src: url('GothamTR-Medium.woff2') format('woff2'),
+        url('GothamTR-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+

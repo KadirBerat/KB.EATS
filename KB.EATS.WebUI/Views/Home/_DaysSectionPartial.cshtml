@@ -1,0 +1,250 @@
+﻿@using Newtonsoft.Json
+@model KB.EATS.WebUI.Models.ViewModels.DaySectionViewModel
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+<table class="Highlight">
+    <thead>
+        <tr>
+            <th>Day</th>
+            <th>Rank</th>
+            <th>Entry</th>
+            <th>Exit</th>
+            <th>Efficiency</th>
+            <th>Working Hours</th>
+            <th>Overtime</th>
+            <th>Absenteeism</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var day in Model.Days.ToList()) //gün verilerini sayfaya ekliyorum
+        {
+            <tr>
+                <td>@day.Day</td>
+                <td>@day.Rank</td>
+                <td>
+                    @(day.Entry != null ? day.Entry.Value.ToString("yyyy-MM-dd hh:mm") : Html.Raw("###"))
+                </td>
+                <td>
+                    @(day.Exit != null ? day.Exit.Value.ToString("yyyy-MM-dd hh:mm") : Html.Raw("###"))
+                </td>
+                <td>%@day.Efficiency</td>
+                <td>@day.WorkingHours</td>
+                <td>@day.Overtime</td>
+                <td>@day.Absenteeism</td>
+                <td>
+                    <!-- Modal Trigger -->
+                    <button id="days-modal-trigger-@day.ID" style="display:none;" class="waves-effect waves-light btn modal-trigger" href="#days-modal-@day.ID">Show Statistics</button>
+                    <a class="waves-effect waves-light btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1 modal-trigger" onclick="DaysModalOpen(@day.ID)">Show Statistics</a>
+                    @* |
+                <button onclick="DaySelect(@day.ID)" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1">Select</button> *@
+                </td>
+            </tr>
+
+            <!-- Modal Structure -->
+            <div id="days-modal-@day.ID" class="day-modal-open-check" style="display:none;">
+                <div class="modal-content">
+                    <h4>Day @day.Day Statistics</h4>
+                    <div>
+                        <canvas id="cnv-crt-d-1-@day.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-d-2-@day.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-d-3-@day.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-d-4-@day.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-d-5-@day.ID"></canvas>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                var valuesRaw_1_@day.ID = @Html.Raw(JsonConvert.SerializeObject(day.DayOvertime.Values));
+                var labelsRaw_1_@day.ID = @Html.Raw(JsonConvert.SerializeObject(day.DayOvertime.Labels));
+                var colors_1_@day.ID = @Html.Raw(JsonConvert.SerializeObject(day.DayOvertime.Colors));
+
+                const ctx_d_1_@day.ID = document.getElementById('cnv-crt-d-1-' + @day.ID);
+
+                new Chart(ctx_d_1_@day.ID, {
+                    type: 'line',
+                    data: {
+                        labels: labelsRaw_1_@day.ID,
+                    datasets: [{
+                        label: 'Overtime',
+                        data: valuesRaw_1_@day.ID,
+                    fill: false,
+                    backgroundColor: colors_1_@day.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                                                                                                                                                        }],
+                                                                                                                                                                                                                                    },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        }
+                    }
+                }
+                                                                                                                                                                                                                                });
+            </script>
+
+            <script type="text/javascript">
+                var valuesRaw_2_@day.ID = @Html.Raw(JsonConvert.SerializeObject(day.DayEfficiency.Values));
+                var labelsRaw_2_@day.ID = @Html.Raw(JsonConvert.SerializeObject(day.DayEfficiency.Labels));
+                var colors_2_@day.ID = @Html.Raw(JsonConvert.SerializeObject(day.DayEfficiency.Colors));
+
+                const ctx_d_2_@day.ID = document.getElementById('cnv-crt-d-2-' + @day.ID);
+
+                new Chart(ctx_d_2_@day.ID, {
+                    type: 'line',
+                    data: {
+                        labels: labelsRaw_2_@day.ID,
+                    datasets: [{
+                        label: 'Efficiency',
+                        data: valuesRaw_2_@day.ID,
+                    fill: false,
+                    backgroundColor: colors_2_@day.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                                                                                                                                                            }],
+                                                                                                                                                                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        }
+                    }
+                }
+                                                                                                                                                                                                                                    });
+            </script>
+
+            <script type="text/javascript">
+                var valuesRaw_3_@day.ID = @Html.Raw(JsonConvert.SerializeObject(day.DayWorkingHours.Values));
+                var labelsRaw_3_@day.ID = @Html.Raw(JsonConvert.SerializeObject(day.DayWorkingHours.Labels));
+                var colors_3_@day.ID = @Html.Raw(JsonConvert.SerializeObject(day.DayWorkingHours.Colors));
+
+                const ctx_d_3_@day.ID = document.getElementById('cnv-crt-d-3-' + @day.ID);
+
+                new Chart(ctx_d_3_@day.ID, {
+                    type: 'line',
+                    data: {
+                        labels: labelsRaw_3_@day.ID,
+                    datasets: [{
+                        label: 'Working Hours',
+                        data: valuesRaw_3_@day.ID,
+                    fill: false,
+                    backgroundColor: colors_3_@day.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                                                                                                                                            }],
+                                                                                                                                                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        }
+                    }
+                }
+                                                                                                                                                                                                                    });
+            </script>
+
+            <script type="text/javascript">
+                var valuesRaw_4_@day.ID = @Html.Raw(JsonConvert.SerializeObject(day.DayAbsenteeism.Values));
+                var labelsRaw_4_@day.ID = @Html.Raw(JsonConvert.SerializeObject(day.DayAbsenteeism.Labels));
+                var colors_4_@day.ID = @Html.Raw(JsonConvert.SerializeObject(day.DayAbsenteeism.Colors));
+
+                const ctx_d_4_@day.ID = document.getElementById('cnv-crt-d-4-' + @day.ID);
+
+                new Chart(ctx_d_4_@day.ID, {
+                    type: 'line',
+                    data: {
+                        labels: labelsRaw_4_@day.ID,
+                    datasets: [{
+                        label: 'Absenteeism',
+                        data: valuesRaw_4_@day.ID,
+                    fill: false,
+                    backgroundColor: colors_4_@day.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                                                                                                                                            }],
+                                                                                                                                                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        },
+                        yAxes: [{
+                            ticks: {
+                                reverse: true // Y ekseni tersine çevirme
+                            }
+                        }]
+                    }
+                }
+                                                                                                                                                                                                                    });
+            </script>
+
+            <script type="text/javascript">
+                var valuesRaw_5_@day.ID = @Html.Raw(JsonConvert.SerializeObject(day.DayRank.Values));
+                var labelsRaw_5_@day.ID = @Html.Raw(JsonConvert.SerializeObject(day.DayRank.Labels));
+                var colors_5_@day.ID = @Html.Raw(JsonConvert.SerializeObject(day.DayRank.Colors));
+
+                const ctx_d_5_@day.ID = document.getElementById('cnv-crt-d-5-' + @day.ID);
+
+                new Chart(ctx_d_5_@day.ID, {
+                    type: 'line',
+                    data: {
+                        labels: labelsRaw_5_@day.ID,
+                    datasets: [{
+                        label: 'Rank',
+                        data: valuesRaw_5_@day.ID,
+                    fill: false,
+                    backgroundColor: colors_5_@day.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                                                                                                                                                            }],
+                                                                                                                                                                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        },
+                        yAxes: [{
+                            ticks: {
+                                reverse: true // Y ekseni tersine çevirme
+                            }
+                        }]
+                    }
+                }
+                                                                                                                                                                                                                                    });
+            </script>
+
+
+        }
+    </tbody>
+</table>

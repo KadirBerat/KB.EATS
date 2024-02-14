@@ -1,0 +1,34 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{
+    string controllerName = ViewContext.RouteData.Values["controller"].ToString();
+    string actionName = ViewContext.RouteData.Values["action"].ToString();
+}
+
+<aside class="sidenav-main nav-expanded nav-lock nav-collapsible sidenav-light sidenav-active-square">
+    <div class="brand-sidebar">
+        <h1 class="logo-wrapper">
+            <a class="brand-logo darken-1" asp-action="Dashboard" asp-controller="Home" style="width:100%; margin-top:5%; font-size:large;">
+                EATS
+            </a>
+            <a class="navbar-toggler" href="#">
+                <i class="material-icons">radio_button_checked</i>
+            </a>
+        </h1>
+
+    </div>
+    <ul class="sidenav sidenav-collapsible leftside-navigation collapsible sidenav-fixed menu-shadow" id="slide-out" data-menu="menu-navigation" data-collapsible="menu-accordion">
+        <li class="bold mt-5">
+            <a class="waves-effect waves-cyan @(controllerName == "Home" && actionName =="Dashboard" ? "active" : "")" asp-action="Dashboard" asp-controller="Home"><i class="material-icons">insights</i><span class="menu-title" data-i18n="Anasayfa">Dashboard</span></a>
+        </li>
+
+        <li class="bold">
+            <a class="waves-effect waves-cyan @(controllerName == "Home" && actionName=="GeneralStatistics" ? "active" : "")" asp-action="GeneralStatistics" asp-controller="Home"><i class="material-icons">query_stats</i><span class="menu-title" data-i18n="General Statistics">General Statistics</span></a>
+        </li>
+
+    </ul>
+    <div class="navigation-background"></div>
+    <a class="sidenav-trigger btn-sidenav-toggle btn-floating btn-medium waves-effect waves-light hide-on-large-only" href="#" data-target="slide-out"><i class="material-icons">menu</i></a>
+</aside>

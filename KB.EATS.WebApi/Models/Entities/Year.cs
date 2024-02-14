@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace KB.EATS.WebApi.Models.Entities;
+﻿namespace KB.EATS.WebApi.Models.Entities;
 
 public partial class Year
 {
@@ -28,6 +25,8 @@ public partial class Year
     public double? EmployeeEfficiencyForecastAccuracyForThisYear { get; set; }
 
     public double? RankForecastAccuracyForThisYear { get; set; }
+
+    public bool? IsCalculated { get; set; }
 
     public virtual ICollection<Month> Months { get; set; } = new List<Month>();
 

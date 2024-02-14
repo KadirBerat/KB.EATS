@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace KB.EATS.WebApi.Models.Entities;
+﻿namespace KB.EATS.WebApi.Models.Entities;
 
 public partial class Week
 {
@@ -20,6 +17,8 @@ public partial class Week
     public double? EmployeeEfficiency { get; set; }
 
     public byte? Rank { get; set; }
+
+    public bool? IsCalculated { get; set; }
 
     public virtual ICollection<Day> Days { get; set; } = new List<Day>();
 

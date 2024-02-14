@@ -1,0 +1,258 @@
+﻿@using Newtonsoft.Json
+@model KB.EATS.WebUI.Models.ViewModels.YearsSectionPartialViewModel
+
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<table class="Highlight">
+    <thead>
+        <tr>
+            <th>Year</th>
+            <th>Rank</th>
+            <th>Efficiency</th>
+            <th>Working Hours</th>
+            <th>Overtime</th>
+            <th>Absenteeism</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var year in Model.Years.ToList()) //yıl verilerini sayfaya ekliyorum
+        {
+            <tr>
+                <td>@year.Year</td>
+                <td>@year.Rank</td>
+                <td>%@year.EmployeeEfficiency</td>
+                <td>@year.TotalWorkingHours</td>
+                <td>@year.TotalOvertime</td>
+                <td>@year.TotalAbsenteeism</td>
+                <td>
+                    <!-- Modal Trigger -->
+                    <button id="years-modal-trigger-@year.ID" style="display:none;" class="waves-effect waves-light btn modal-trigger" href="#years-modal-@year.ID">Show Statistics</button>
+                    <a class="waves-effect waves-light btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1 modal-trigger" onclick="YearsModalOpen(@year.ID)">Show Statistics</a>
+                    |
+                    <button onclick="YearSelect(@year.ID, '@year.Year')" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1">Select</button>
+                </td>
+            </tr>
+
+            <!-- Modal Structure -->
+            <div id="years-modal-@year.ID" class="year-modal-open-check" style="display:none;">
+                <div class="modal-content">
+                    <h4>Year @year.Year Statistics</h4>
+                    <div>
+                        <canvas id="cnv-crt-1-@year.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-2-@year.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-3-@year.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-4-@year.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-5-@year.ID"></canvas>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                // var valuesRaw = @Html.Raw("[" + string.Join(",", year.YearOvertime.Values) + "]");
+                var valuesRaw_1_@year.ID = @Html.Raw(JsonConvert.SerializeObject(year.YearOvertime.Values));
+                var labelsRaw_1_@year.ID = @Html.Raw(JsonConvert.SerializeObject(year.YearOvertime.Labels));
+                var colors_1_@year.ID = @Html.Raw(JsonConvert.SerializeObject(year.YearOvertime.Colors));
+
+                const ctx_1_@year.ID = document.getElementById('cnv-crt-1-' + @year.ID);
+
+                new Chart(ctx_1_@year.ID, {
+                    type: 'line',
+                    data: {
+                        // labels: ['1', '2', '3', '4', '5', '6'],
+                        labels: labelsRaw_1_@year.ID,
+                    datasets: [{
+                        label: 'Overtime',
+                        // data: [-4, 19, 3, 5, 2, 3],
+                        data: valuesRaw_1_@year.ID,
+                    fill: false,
+                    backgroundColor: colors_1_@year.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                        }],
+                                                                                                    },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        }
+                    }
+                }
+                                                                                                });
+            </script>
+
+            <script type="text/javascript">
+                // var valuesRaw = @Html.Raw("[" + string.Join(",", year.YearOvertime.Values) + "]");
+                var valuesRaw_2_@year.ID = @Html.Raw(JsonConvert.SerializeObject(year.YearEfficiency.Values));
+                var labelsRaw_2_@year.ID = @Html.Raw(JsonConvert.SerializeObject(year.YearEfficiency.Labels));
+                var colors_2_@year.ID = @Html.Raw(JsonConvert.SerializeObject(year.YearEfficiency.Colors));
+
+                const ctx_2_@year.ID = document.getElementById('cnv-crt-2-' + @year.ID);
+
+                new Chart(ctx_2_@year.ID, {
+                    type: 'line',
+                    data: {
+                        // labels: ['1', '2', '3', '4', '5', '6'],
+                        labels: labelsRaw_2_@year.ID,
+                    datasets: [{
+                        label: 'Efficiency',
+                        // data: [-4, 19, 3, 5, 2, 3],
+                        data: valuesRaw_2_@year.ID,
+                    fill: false,
+                    backgroundColor: colors_2_@year.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                            }],
+                                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        }
+                    }
+                }
+                                                                                                    });
+            </script>
+
+            <script type="text/javascript">
+                // var valuesRaw = @Html.Raw("[" + string.Join(",", year.YearOvertime.Values) + "]");
+                var valuesRaw_3_@year.ID = @Html.Raw(JsonConvert.SerializeObject(year.YearWorkingHours.Values));
+                var labelsRaw_3_@year.ID = @Html.Raw(JsonConvert.SerializeObject(year.YearWorkingHours.Labels));
+                var colors_3_@year.ID = @Html.Raw(JsonConvert.SerializeObject(year.YearWorkingHours.Colors));
+
+                const ctx_3_@year.ID = document.getElementById('cnv-crt-3-' + @year.ID);
+
+                new Chart(ctx_3_@year.ID, {
+                    type: 'line',
+                    data: {
+                        // labels: ['1', '2', '3', '4', '5', '6'],
+                        labels: labelsRaw_3_@year.ID,
+                    datasets: [{
+                        label: 'Working Hours',
+                        // data: [-4, 19, 3, 5, 2, 3],
+                        data: valuesRaw_3_@year.ID,
+                    fill: false,
+                    backgroundColor: colors_3_@year.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                            }],
+                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        }
+                    }
+                }
+                                                                                    });
+            </script>
+
+            <script type="text/javascript">
+                // var valuesRaw = @Html.Raw("[" + string.Join(",", year.YearOvertime.Values) + "]");
+                var valuesRaw_4_@year.ID = @Html.Raw(JsonConvert.SerializeObject(year.YearAbsenteeism.Values));
+                var labelsRaw_4_@year.ID = @Html.Raw(JsonConvert.SerializeObject(year.YearAbsenteeism.Labels));
+                var colors_4_@year.ID = @Html.Raw(JsonConvert.SerializeObject(year.YearAbsenteeism.Colors));
+
+                const ctx_4_@year.ID = document.getElementById('cnv-crt-4-' + @year.ID);
+
+                new Chart(ctx_4_@year.ID, {
+                    type: 'line',
+                    data: {
+                        // labels: ['1', '2', '3', '4', '5', '6'],
+                        labels: labelsRaw_4_@year.ID,
+                    datasets: [{
+                        label: 'Absenteeism',
+                        // data: [-4, 19, 3, 5, 2, 3],
+                        data: valuesRaw_4_@year.ID,
+                    fill: false,
+                    backgroundColor: colors_4_@year.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                            }],
+                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        },
+                        yAxes: [{
+                            ticks: {
+                                reverse: true // Y ekseni tersine çevirme
+                            }
+                        }]
+                    }
+                }
+                                                                                    });
+            </script>
+
+            <script type="text/javascript">
+                // var valuesRaw = @Html.Raw("[" + string.Join(",", year.YearOvertime.Values) + "]");
+                var valuesRaw_5_@year.ID = @Html.Raw(JsonConvert.SerializeObject(year.YearRank.Values));
+                var labelsRaw_5_@year.ID = @Html.Raw(JsonConvert.SerializeObject(year.YearRank.Labels));
+                var colors_5_@year.ID = @Html.Raw(JsonConvert.SerializeObject(year.YearRank.Colors));
+
+                const ctx_5_@year.ID = document.getElementById('cnv-crt-5-' + @year.ID);
+
+                new Chart(ctx_5_@year.ID, {
+                    type: 'line',
+                    data: {
+                        // labels: ['1', '2', '3', '4', '5', '6'],
+                        labels: labelsRaw_5_@year.ID,
+                    datasets: [{
+                        label: 'Rank',
+                        // data: [-4, 19, 3, 5, 2, 3],
+                        data: valuesRaw_5_@year.ID,
+                    fill: false,
+                    backgroundColor: colors_5_@year.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                            }],
+                                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        },
+                        yAxes: [{
+                            ticks: {
+                                reverse: true // Y ekseni tersine çevirme
+                            }
+                        }]
+                    }
+                }
+                                                                                                    });
+            </script>
+
+
+        }
+    </tbody>
+</table>
+

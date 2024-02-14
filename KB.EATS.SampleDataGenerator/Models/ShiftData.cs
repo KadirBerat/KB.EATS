@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace KB.EATS.SampleDataGenerator.Models;
+﻿namespace KB.EATS.SampleDataGenerator.Models;
 
 public partial class ShiftData
 {

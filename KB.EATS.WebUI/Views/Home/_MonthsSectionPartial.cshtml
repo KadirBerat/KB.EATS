@@ -1,0 +1,241 @@
+﻿@using Newtonsoft.Json
+@model KB.EATS.WebUI.Models.ViewModels.MonthsSectionPartialViewModel
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<table class="Highlight">
+    <thead>
+        <tr>
+            <th>Month</th>
+            <th>Rank</th>
+            <th>Efficiency</th>
+            <th>Working Hours</th>
+            <th>Overtime</th>
+            <th>Absenteeism</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var month in Model.Months.ToList()) //ay verilerini sayfaya ekliyorum
+        {
+            <tr>
+                <td>@month.Month</td>
+                <td>@month.Rank</td>
+                <td>%@month.EmployeeEfficiency</td>
+                <td>@month.TotalWorkingHours</td>
+                <td>@month.TotalOvertime</td>
+                <td>@month.TotalAbsenteeism</td>
+                <td>
+                    <!-- Modal Trigger -->
+                    <button id="months-modal-trigger-@month.ID" style="display:none;" class="waves-effect waves-light btn modal-trigger" href="#months-modal-@month.ID">Show Statistics</button>
+                    <a class="waves-effect waves-light btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1 modal-trigger" onclick="MonthsModalOpen(@month.ID)">Show Statistics</a>
+                    |
+                    <button onclick="MonthSelect(@month.ID, '@month.Month')" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1">Select</button>
+                </td>
+            </tr>
+
+            <!-- Modal Structure -->
+            <div id="months-modal-@month.ID" class="month-modal-open-check" style="display:none;">
+                <div class="modal-content">
+                    <h4>Month @month.Month Statistics</h4>
+                    <div>
+                        <canvas id="cnv-crt-m-1-@month.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-m-2-@month.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-m-3-@month.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-m-4-@month.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-m-5-@month.ID"></canvas>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                var valuesRaw_1_@month.ID = @Html.Raw(JsonConvert.SerializeObject(month.MonthOvertime.Values));
+                var labelsRaw_1_@month.ID = @Html.Raw(JsonConvert.SerializeObject(month.MonthOvertime.Labels));
+                var colors_1_@month.ID = @Html.Raw(JsonConvert.SerializeObject(month.MonthOvertime.Colors));
+
+                const ctx_m_1_@month.ID = document.getElementById('cnv-crt-m-1-' + @month.ID);
+
+                new Chart(ctx_m_1_@month.ID, {
+                    type: 'line',
+                    data: {
+                        labels: labelsRaw_1_@month.ID,
+                    datasets: [{
+                        label: 'Overtime',
+                        data: valuesRaw_1_@month.ID,
+                    fill: false,
+                    backgroundColor: colors_1_@month.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                                                        }],
+                                                                                                                                    },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        }
+                    }
+                }
+                                                                                                                                });
+            </script>
+
+            <script type="text/javascript">
+                var valuesRaw_2_@month.ID = @Html.Raw(JsonConvert.SerializeObject(month.MonthEfficiency.Values));
+                var labelsRaw_2_@month.ID = @Html.Raw(JsonConvert.SerializeObject(month.MonthEfficiency.Labels));
+                var colors_2_@month.ID = @Html.Raw(JsonConvert.SerializeObject(month.MonthEfficiency.Colors));
+
+                const ctx_m_2_@month.ID = document.getElementById('cnv-crt-m-2-' + @month.ID);
+
+                new Chart(ctx_m_2_@month.ID, {
+                    type: 'line',
+                    data: {
+                        labels: labelsRaw_2_@month.ID,
+                    datasets: [{
+                        label: 'Efficiency',
+                        data: valuesRaw_2_@month.ID,
+                    fill: false,
+                    backgroundColor: colors_2_@month.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                                                            }],
+                                                                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        }
+                    }
+                }
+                                                                                                                                    });
+            </script>
+
+            <script type="text/javascript">
+                var valuesRaw_3_@month.ID = @Html.Raw(JsonConvert.SerializeObject(month.MonthWorkingHours.Values));
+                var labelsRaw_3_@month.ID = @Html.Raw(JsonConvert.SerializeObject(month.MonthWorkingHours.Labels));
+                var colors_3_@month.ID = @Html.Raw(JsonConvert.SerializeObject(month.MonthWorkingHours.Colors));
+
+                const ctx_m_3_@month.ID = document.getElementById('cnv-crt-m-3-' + @month.ID);
+
+                new Chart(ctx_m_3_@month.ID, {
+                    type: 'line',
+                    data: {
+                        labels: labelsRaw_3_@month.ID,
+                    datasets: [{
+                        label: 'Working Hours',
+                        data: valuesRaw_3_@month.ID,
+                    fill: false,
+                    backgroundColor: colors_3_@month.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                                            }],
+                                                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        }
+                    }
+                }
+                                                                                                                    });
+            </script>
+
+            <script type="text/javascript">
+                var valuesRaw_4_@month.ID = @Html.Raw(JsonConvert.SerializeObject(month.MonthAbsenteeism.Values));
+                var labelsRaw_4_@month.ID = @Html.Raw(JsonConvert.SerializeObject(month.MonthAbsenteeism.Labels));
+                var colors_4_@month.ID = @Html.Raw(JsonConvert.SerializeObject(month.MonthAbsenteeism.Colors));
+
+                const ctx_m_4_@month.ID = document.getElementById('cnv-crt-m-4-' + @month.ID);
+
+                new Chart(ctx_m_4_@month.ID, {
+                    type: 'line',
+                    data: {
+                        labels: labelsRaw_4_@month.ID,
+                    datasets: [{
+                        label: 'Absenteeism',
+                        data: valuesRaw_4_@month.ID,
+                    fill: false,
+                    backgroundColor: colors_4_@month.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                                            }],
+                                                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        },
+                        yAxes: [{
+                            ticks: {
+                                reverse: true // Y ekseni tersine çevirme
+                            }
+                        }]
+                    }
+                }
+                                                                                                                    });
+            </script>
+
+            <script type="text/javascript">
+                var valuesRaw_5_@month.ID = @Html.Raw(JsonConvert.SerializeObject(month.MonthRank.Values));
+                var labelsRaw_5_@month.ID = @Html.Raw(JsonConvert.SerializeObject(month.MonthRank.Labels));
+                var colors_5_@month.ID = @Html.Raw(JsonConvert.SerializeObject(month.MonthRank.Colors));
+
+                const ctx_m_5_@month.ID = document.getElementById('cnv-crt-m-5-' + @month.ID);
+
+                new Chart(ctx_m_5_@month.ID, {
+                    type: 'line',
+                    data: {
+                        labels: labelsRaw_5_@month.ID,
+                    datasets: [{
+                        label: 'Rank',
+                        data: valuesRaw_5_@month.ID,
+                    fill: false,
+                    backgroundColor: colors_5_@month.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                                                            }],
+                                                                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        },
+                        yAxes: [{
+                            ticks: {
+                                reverse: true // Y ekseni tersine çevirme
+                            }
+                        }]
+                    }
+                }
+                                                                                                                                    });
+            </script>
+
+
+        }
+    </tbody>
+</table>

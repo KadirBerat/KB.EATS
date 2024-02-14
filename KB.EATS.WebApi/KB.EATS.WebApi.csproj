@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.13" />
+    <PackageReference Include="Microsoft.DependencyValidation.Analyzers" Version="0.11.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.13">
       <PrivateAssets>all</PrivateAssets>
@@ -23,6 +24,19 @@
 
   <ItemGroup>
     <Folder Include="Models\Entities\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="..\DV_1\DependencyValidation1.layerdiagram" Link="DependencyValidation1.layerdiagram">
+      <Visible>False</Visible>
+    </AdditionalFiles>
+    <None Include="..\DV_1\DependencyValidation1.layerdiagram.layout" Link="DependencyValidation1.layerdiagram.layout" />
+    <None Include="..\DV_1\DependencyValidation1.layerdiagram.suppressions" Link="DependencyValidation1.layerdiagram.suppressions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KB.EATS.DataAnalysis\KB.EATS.DataAnalysis.csproj" />
+    <ProjectReference Include="..\KB.EATS.SharedModels\KB.EATS.SharedModels.csproj" />
   </ItemGroup>
 
 </Project>

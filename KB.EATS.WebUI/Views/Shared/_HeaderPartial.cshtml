@@ -1,0 +1,22 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<!-- Timer AntiForegeryToken oluştuğu zaman otomatik olarak aktiffleşir ve eğer kullanının görmesi gerekiyorsa görünür bunun kontrolü script ile yapılıyor  -->
+
+<header class="page-topbar" id="header">
+    <div class="navbar navbar-fixed">
+        <nav class="navbar-main navbar-color nav-collapsible sideNav-lock navbar-dark no-shadow" style="background-color:#69a3b9">
+            <div class="nav-wrapper">
+                <ul class="navbar-list right">
+                    <li class="hide-on-med-and-down"><a class="waves-effect waves-block waves-light toggle-fullscreen" href="javascript:void(0);"><i class="material-icons">settings_overscan</i></a></li>
+                    <li><a class="waves-effect waves-block waves-light profile-button" href="javascript:void(0);" data-target="profile-dropdown"><i class="material-icons dp48">person</i></a></li>
+                    <li><div class="afTimer display-none">Kalan Süre <span></span> Dakika</div></li>
+                </ul>
+                <ul class="dropdown-content" id="profile-dropdown">
+                    <li><a class="grey-text text-darken-1"><i class="material-icons">keyboard_tab</i> Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</header>

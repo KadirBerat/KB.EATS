@@ -1,10 +1,6 @@
 ﻿using KB.EATS.DataAnalysis;
 using KB.EATS.DataAnalysis.Models;
 using KB.EATS.SampleDataGenerator.Models;
-using System.Diagnostics;
-using System.IO.Enumeration;
-using System.Reflection;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace KB.EATS.SampleDataGenerator
 {
@@ -362,7 +358,7 @@ namespace KB.EATS.SampleDataGenerator
                     return "#!";
                 }
             }
-        } 
+        }
         #endregion
 
         //çalışanların rastgele sıralanması

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace KB.EATS.WebApi.Models.Entities;
+﻿namespace KB.EATS.WebApi.Models.Entities;
 
 public partial class UserStatistic
 {

@@ -1,29 +1,35 @@
 ﻿using KB.EATS.WebApi.Models.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace KB.EATS.WebApi.Controllers
 {
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("api/shift")]
     public class UserShiftManager : ControllerBase
     {
-        private KbEatsContext db = new KbEatsContext();
+        private KbEatsContext db = new KbEatsContext(); //veritabanı bağlantısı için kullanıyorum
 
-        private readonly ILogger<UserShiftManager> _logger;
+        private readonly ILogger<UserShiftManager> _logger; //loglama için kullanıyorum
 
+        //loglama için kullanıyorum
         public UserShiftManager(ILogger<UserShiftManager> logger)
         {
             _logger = logger;
         }
 
-        [HttpGet(Name = "AddShiftData")]
+        /// <summary>
+        /// Fiziksel ortamdan gelen mesai giriş veya çıkış verisini veri tabanıma kaydediyorum ve eğer mesai çıkış verisi ise analizini yapıyorum.
+        /// Ayrıca analiz sonucunda kullanıcının günlük, haftalık, aylık ve yıllık istatistiklerini hesaplıyorum.
+        /// </summary>
+        /// <param name="shiftData">mesai verisi</param>
+        /// <param name="userId">çalışan id</param>
+        /// <returns></returns>
+        [HttpPost("add")] //http post methodu ve add isimli bir endpoint oluşturdum
         public IActionResult AddShiftData(ShiftData shiftData, int userId)
         {
             int result = 0;
 
-
+            //kullanıcının mesai verisini alıyorum
             UserShift shift = db.UserShifts.Where(x => x.UserId == userId && x.Date.Value.ToString("dd-MM-yyyy") == shiftData.FullDate.Value.ToString("dd-MM-yyyy")).FirstOrDefault();
 
             if (shift != null)
@@ -51,7 +57,8 @@ namespace KB.EATS.WebApi.Controllers
                             {
                                 week.Days.Add(new Day()
                                 {
-                                    DayValue = Convert.ToByte(shift.Date.Value.ToString("dd"))
+                                    DayValue = Convert.ToByte(shift.Date.Value.ToString("dd")),
+                                    IsCalculated = false,
                                 });
                             }
                         }
@@ -60,11 +67,13 @@ namespace KB.EATS.WebApi.Controllers
                             month.Weeks.Add(new Week()
                             {
                                 WeekValue = Convert.ToByte(GetWeekNumberOfMonth(shift.Date.Value)),
+                                IsCalculated = false,
                                 Days = new List<Day>()
                                 {
                                     new Day()
                                     {
-                                        DayValue = Convert.ToByte(shift.Date.Value.ToString("dd"))
+                                        DayValue = Convert.ToByte(shift.Date.Value.ToString("dd")),
+                                        IsCalculated = false,
                                     }
                                 }
                             });
@@ -75,16 +84,19 @@ namespace KB.EATS.WebApi.Controllers
                         year.Months.Add(new Month()
                         {
                             MonthValue = Convert.ToByte(shift.Date.Value.ToString("MM")),
+                            IsCalculated = false,
                             Weeks = new List<Week>()
                             {
                                 new Week()
                                 {
                                     WeekValue = Convert.ToByte(GetWeekNumberOfMonth(shift.Date.Value)),
+                                    IsCalculated = false,
                                     Days = new List<Day>()
                                     {
                                         new Day()
                                         {
-                                            DayValue = Convert.ToByte(shift.Date.Value.ToString("dd"))
+                                            DayValue = Convert.ToByte(shift.Date.Value.ToString("dd")),
+                                            IsCalculated = false,
                                         }
                                     }
                                 }
@@ -97,23 +109,27 @@ namespace KB.EATS.WebApi.Controllers
                     db.Users.Find(userId).UserStatistic.Years.Add(new Year
                     {
                         YearValue = Convert.ToInt16(shift.Date.Value.ToString("yyyy")),
+                        IsCalculated = false,
                         Months = new List<Month>()
                         {
                             new Month()
                             {
                                  MonthValue = Convert.ToByte(shift.Date.Value.ToString("MM")),
+                                 IsCalculated = false,
                                   Weeks = new List<Week>()
                                   {
                                       new Week()
                                       {
                                           WeekValue = Convert.ToByte(GetWeekNumberOfMonth(shift.Date.Value)),
-                                           Days = new List<Day>()
-                                           {
-                                               new Day()
-                                               {
-                                                    DayValue = Convert.ToByte(shift.Date.Value.ToString("dd"))
-                                               }
-                                           }
+                                          IsCalculated = false,
+                                          Days = new List<Day>()
+                                          {
+                                              new Day()
+                                              {
+                                                   DayValue = Convert.ToByte(shift.Date.Value.ToString("dd")),
+                                                   IsCalculated = false,
+                                              }
+                                          }
 
                                       }
                                   }
@@ -124,9 +140,116 @@ namespace KB.EATS.WebApi.Controllers
 
                 result = db.SaveChanges();
 
+                //Örnek veiler ile çalıştığım ve zaman yetmediği için aşağıdaki kodu tamamlamadım fakat nereye ne eklenmesi gerektiğini belirttim ve analiz öncesi gerekli tüm kontrolleri yaptım. Örnek veriler üzerinde yaptığım analiz işlemlerinin kodları Test projesinde mevcut.
+
                 //analiz
+                UserStatistic _stat = db.Users.Find(userId).UserStatistic;
+                Day _day = _stat.Years.LastOrDefault().Months.LastOrDefault().Weeks.LastOrDefault().Days.LastOrDefault();
+                byte weekValue = _day.Week.WeekValue.Value;
+                byte monthValue = _day.Week.Month.MonthValue.Value;
+                short yearValue = _day.Week.Month.Years.YearValue.Value;
+
+                if (monthValue == 1) //ocak ayındaysak önceki yılın analiz edilip edilmediğini kontrol ediyorum
+                {
+                    if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue - 1) != null)
+                    {
+                        if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue - 1).IsCalculated == false)
+                        {
+                            //yıl analizi
+                        }
+                    }
+                }
+
+                if (monthValue == 1) //ocak ayındaysak bir önceki yılın aralık ayının analiz edilip edilmediğini kontrol ediyorum
+                {
+                    if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue - 1) != null)
+                    {
+                        if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue - 1).Months.LastOrDefault() != null)
+                        {
+                            if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue - 1).Months.LastOrDefault().IsCalculated == false)
+                            {
+                                //ay analizi
+                            }
+
+                            if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue - 1).Months.LastOrDefault().Weeks.LastOrDefault() != null) //ocak ayındaysak bir önceki yılın son haftasının analiz edilip edilmediğini kontrol ediyorum
+                            {
+                                if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue - 1).Months.LastOrDefault().Weeks.LastOrDefault().IsCalculated == false)
+                                {
+                                    //hafta analizi
+                                }
+
+                                if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue - 1).Months.LastOrDefault().Weeks.LastOrDefault().Days.LastOrDefault() != null) // ocak ayındaysak bir önceki yılın son gününün analiz edilip edilmediğini kontrol ediyorum
+                                {
+                                    if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue - 1).Months.LastOrDefault().Weeks.LastOrDefault().Days.LastOrDefault().IsCalculated == false)
+                                    {
+                                        //gün analizi
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue).Months.FirstOrDefault(x => x.MonthValue == monthValue - 1) != null) //bir önceki ayın analizi
+                    {
+                        if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue).Months.FirstOrDefault(x => x.MonthValue == monthValue - 1).IsCalculated == false)
+                        {
+                            //ay analizi
+                        }
+
+                        if (_stat.Years.FirstOrDefault().Months.FirstOrDefault(x => x.MonthValue == monthValue - 1).Weeks.LastOrDefault() != null) //bir önceki ayın son haftasının analizi
+                        {
+                            if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue).Months.FirstOrDefault(x => x.MonthValue == monthValue - 1).Weeks.LastOrDefault().IsCalculated == false)
+                            {
+                                //hafta analizi
+                            }
+
+                            if (_stat.Years.FirstOrDefault().Months.FirstOrDefault(x => x.MonthValue == monthValue - 1).Weeks.LastOrDefault().Days.LastOrDefault() != null) //bir önceki ayın son gününün analizi
+                            {
+                                if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue).Months.FirstOrDefault(x => x.MonthValue == monthValue - 1).Weeks.LastOrDefault().Days.LastOrDefault().IsCalculated == false)
+                                {
+                                    //gün analizi
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (weekValue > 1)
+                {
+                    if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue).Months.FirstOrDefault(x => x.MonthValue == monthValue).Weeks.FirstOrDefault(x => x.WeekValue == weekValue - 1) != null)
+                    {
+                        if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue).Months.FirstOrDefault(x => x.MonthValue == monthValue).Weeks.FirstOrDefault(x => x.WeekValue == weekValue - 1).IsCalculated == false)
+                        {
+                            //hafta analizi
+                        }
+
+                        if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue).Months.FirstOrDefault(x => x.MonthValue == monthValue).Weeks.FirstOrDefault(x => x.WeekValue == weekValue - 1).Days.LastOrDefault() != null)
+                        {
+                            if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue).Months.FirstOrDefault(x => x.MonthValue == monthValue).Weeks.FirstOrDefault(x => x.WeekValue == weekValue - 1).Days.LastOrDefault().IsCalculated == false)
+                            {
+                                //gün analizi
+                            }
+                        }
+                    }
+                }
+
+                if (_day.IsCalculated == false)
+                {
+                    //gün analizi
+                }
+                if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue).Months.FirstOrDefault(x => x.MonthValue == monthValue).Weeks.FirstOrDefault(x => x.WeekValue == weekValue - 1).Days.FirstOrDefault(x => x.DayValue == _day.DayValue - 1) != null)
+                {
+                    if (_stat.Years.FirstOrDefault(x => x.YearValue == yearValue).Months.FirstOrDefault(x => x.MonthValue == monthValue).Weeks.FirstOrDefault(x => x.WeekValue == weekValue - 1).Days.FirstOrDefault(x => x.DayValue == _day.DayValue - 1).IsCalculated == false)
+                    {
+                        //gün analizi
+                    }
+                }
+
+
             }
-            else
+            else //mesai giriş verisi ekliyorum
             {
                 db.Users.Find(userId).UserShifts.Add(new UserShift
                 {
@@ -144,7 +267,7 @@ namespace KB.EATS.WebApi.Controllers
                 result = db.SaveChanges();
             }
 
-
+            // veri tabanına kayıt işleminin başarısını kontrol ediyorum
             if (result == 0)
             {
                 return BadRequest("An error occurred");
@@ -155,6 +278,7 @@ namespace KB.EATS.WebApi.Controllers
             }
         }
 
+        //şu anki günün haftanın kaçıncı günü olduğunu hesaplıyorum
         private int GetWeekNumberOfMonth(DateTime date)
         {
             DateTime firstDayOfMonth = new DateTime(date.Year, date.Month, 1);
@@ -163,6 +287,7 @@ namespace KB.EATS.WebApi.Controllers
             return weekNumber;
         }
 
+        // şu anki günün haftanın ilk gününe göre offset değerini hesaplıyorum
         private int GetDayOfWeekOffset(DateTime date, DayOfWeek firstDayOfWeek)
         {
             int offset = date.DayOfWeek - firstDayOfWeek;

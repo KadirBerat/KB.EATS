@@ -7,9 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <AdditionalFiles Include="..\DV_1\DependencyValidation1.layerdiagram" Link="DependencyValidation1.layerdiagram">
+      <Visible>False</Visible>
+    </AdditionalFiles>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.DependencyValidation.Analyzers" Version="0.11.0" />
     <PackageReference Include="Microsoft.ML" Version="3.0.0-preview.23266.6" />
     <PackageReference Include="Microsoft.ML.FastTree" Version="3.0.0-preview.23266.6" />
     <PackageReference Include="Plotly.NET" Version="3.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KB.EATS.SharedModels\KB.EATS.SharedModels.csproj" />
   </ItemGroup>
 
 </Project>

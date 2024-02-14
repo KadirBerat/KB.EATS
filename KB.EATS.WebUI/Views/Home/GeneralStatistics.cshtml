@@ -1,0 +1,314 @@
+﻿@{
+    ViewData["Title"] = "General Statistics";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- sayfa içi özel css dosyam  -->
+@section PageStyles {
+    <style>
+        label {
+            color: black !important;
+            margin-top: -9%;
+            font-size: smaller;
+        }
+
+        .select-dropdown.dropdown-trigger {
+            border-color: black !important;
+        }
+
+        .select-dropdown.dropdown-content li.selected {
+            background-color: #69a3b9 !important;
+        }
+
+        .dropdown-content span:hover {
+            background-color: rgba(105, 163, 185, 0.45) !important;
+        }
+
+        .custom-alert {
+            background-color: #69a3b9 !important;
+        }
+
+        .required {
+            color: red !important;
+        }
+
+        .alert-close-message {
+            font-size: x-small;
+        }
+
+        .apply-btn {
+            background: linear-gradient(45deg, #69a3b9, #3583a1) !important;
+            background-image: linear-gradient(45deg, rgb(105, 163, 185), rgb(53, 131, 161)) !important;
+            background-position-x: initial !important;
+            background-position-y: initial !important;
+            background-size: initial !important;
+            background-repeat: initial !important;
+            background-attachment: initial !important;
+            background-origin: initial !important;
+            background-clip: initial !important;
+            background-color: initial !important;
+        }
+
+        select {
+            border: none !important;
+        }
+
+            select:focus {
+                outline: none !important;
+            }
+    </style>
+}
+
+<div class="card-alert card custom-alert">
+    <div class="card-content white-text">
+        <span class="card-title white-text darken-1">
+            <p>
+                <i class="material-icons">info_outline</i> INFO : Functioning of the filtering system
+            </p>
+        </span>
+        @* <p>
+            <span class="required">*</span>Employee, Year and Statistics Type selection is required. <br />
+            &nbsp;If Month or Day is not selected, the year table is shown.<br />
+            &nbsp;If the month is selected but the day is not selected, the month table is displayed.<br />
+            &nbsp;If month and day are selected, the day table is displayed. <br />
+            &nbsp;If you do not want to select the month or day, please select the "ignore" option in the relevant section. <br />
+            &nbsp;<span class="alert-close-message mt-2">You can close this message with the cross in the upper right corner.</span>
+        </p> *@
+        <p>
+            <span class="required">*</span>Employee, Year and Statistics Type selection is required. <br />
+            &nbsp;If Month is not selected, the year table is displayed.<br />
+            &nbsp;If the month is selected, the month table is displayed.<br />
+            &nbsp;If you do not want to select the month, please select the "ignore" option in the relevant section. <br />
+            &nbsp;<span class="alert-close-message mt-2">You can close this message with the cross in the upper right corner.</span>
+        </p>
+    </div>
+    <button type="button" class="close white-text" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+</div>
+
+<div class="row" style="background-color:#69a3b9;">
+    <div class="input-field col s2 mt-2">
+        <label>Employee<span class="required">*</span></label>
+        <select id="emp-sec" class="browser-default">
+            <option value="nan" disabled selected>Choose Employee</option>
+        </select>
+    </div>
+
+    <div class="input-field col s2 mt-2">
+        <label>Year<span class="required">*</span></label>
+        <select id="year-sec" class="browser-default">
+            <option value="nan" disabled selected>Choose Year</option>
+        </select>
+    </div>
+
+    <div class="input-field col s2 mt-2">
+        <label>Month</label>
+        <select id="month-sec" class="browser-default">
+            <option value="nan" disabled selected>Choose Month</option>
+            <option value="0">Ignore</option>
+        </select>
+    </div>
+
+    @* <div class="input-field col s2 mt-2">
+    <label>Day</label>
+    <select id="day-sec" class="browser-default">
+    <option value="nan" disabled selected>Choose Day</option>
+    <option value="0">Ignore</option>
+    </select>
+    </div> *@
+
+    <div class="input-field col s2 mt-2">
+        <label>Statistics Type<span class="required">*</span></label>
+        <select id="filter-sec" class="browser-default">
+            <option value="nan" disabled selected>Choose Type</option>
+            <option value="1">Working Hours</option>
+            <option value="2">Overtime</option>
+            <option value="3">Absenteeism</option>
+            <option value="4">Efficiency</option>
+            <option value="5">Rank</option>
+        </select>
+    </div>
+    <div class="input-field col s2 mt-2">
+        <button id="filter-btn" disabled onclick="ApplyFilter()" class="apply-btn waves-effect waves-light  btn box-shadow-none border-round mr-1 mb-1">Show Statistics</button>
+    </div>
+</div>
+
+<!-- grafik alanı  -->
+<div id="cnv-sec">
+</div>
+
+<!-- filtreleme işlemi için kullandığım scriptler, verileri almak için ajax kullandım  -->
+@section PageScripts {
+    <script>
+        $().ready(function () {
+            var id = "0";
+            var subjectHtml = '<option value="nan' + '" disabled selected>Choose Employee</option>';
+            $.ajax({
+                // url: '@Url.Action("GetEmployees", "Home")/' + id,
+                // method: 'GET',
+                // data: { id },
+                // success: function (data) {
+                //     $.each(data, function (i, sub) {
+                //         subjectHtml += '< option value = "' + sub.Value + '" > ' + sub.Text + ' < /option>';
+                //     });
+                //     $('#emp-sec').html(subjectHtml);
+                // },
+                url: '@Url.Action("GetEmployees", "Home")',
+                type: 'GET',
+                success: function (data) {
+                    $.each(data, function (i, sub) {
+                        subjectHtml += '<option value="' + sub.value + '">' + sub.text + '</option>';
+                    });
+                    $('#emp-sec').html(subjectHtml);
+
+                    FilterControl();
+
+
+                },
+                error: function (data) {
+                    alert("Bir sorun oluştu!");
+                }
+            });
+
+        });
+
+        $("#emp-sec").change(function () {
+            var monthHtml = '<option value="nan' + '" disabled selected>Choose Month</option>' + '<option value="' + '0">Ignore</option>';
+            $('#month-sec').html(monthHtml);
+            var dayHtml = '<option value="nan' + '" disabled selected>Choose Day</option>' + '<option value="' + '0">Ignore</option>';
+            $('#day-sec').html(dayHtml);
+
+            var id = $("#emp-sec option:selected").val();
+            var subjectHtml = '<option value="nan' + '" disabled selected>Choose Year</option>';
+            $.ajax({
+                url: '@Url.Action("GetYears", "Home")/' + id,
+                method: 'GET',
+                data: { id },
+                success: function (data) {
+                    $.each(data, function (i, sub) {
+                        subjectHtml += '<option value="' + sub.value + '">' + sub.text + '</option>';
+                    });
+                    $('#year-sec').html(subjectHtml);
+
+                    FilterControl();
+
+
+                },
+                error: function (data) {
+                    alert("Bir sorun oluştu!");
+                }
+            });
+
+        });
+
+        $("#year-sec").change(function () {
+            var dayHtml = '<option value="nan' + '" disabled selected>Choose Day</option>' + '<option value="' + '0">Ignore</option>';
+            $('#day-sec').html(dayHtml);
+
+            var id = $("#year-sec option:selected").val();
+            var subjectHtml = '<option value="nan' + '" disabled selected>Choose Month</option>' + '<option value="' + '0">Ignore</option>';
+            $.ajax({
+                url: '@Url.Action("GetMonths", "Home")/' + id,
+                method: 'GET',
+                data: { id },
+                success: function (data) {
+                    $.each(data, function (i, sub) {
+                        subjectHtml += '<option value="' + sub.value + '">' + sub.text + '</option>';
+                    });
+                    $('#month-sec').html(subjectHtml);
+
+                    FilterControl();
+
+                },
+                error: function (data) {
+                    alert("Bir sorun oluştu!");
+                }
+            });
+
+        });
+
+        $("#month-sec").change(function () {
+            // var dayHtml = '<option value="nan' + '" disabled selected>Choose Day</option>' + '<option value="' + '0">Ignore</option>';
+            // $('#day-sec').html(dayHtml);
+
+            // var id = $("#month-sec option:selected").val();
+            // if (id != '0') {
+            //     var subjectHtml = '<option value="nan' + '" disabled selected>Choose Day</option>' + '<option value="' + '0">Ignore</option>';
+            //     $.ajax({
+            //         url: '@Url.Action("GetDays", "Home")/' + id,
+            //         method: 'GET',
+            //         data: { id },
+            //         success: function (data) {
+            //             $.each(data, function (i, sub) {
+            //                 subjectHtml += '<option value="' + sub.value + '">' + sub.text + '</option>';
+            //             });
+            //             $('#day-sec').html(subjectHtml);
+            //         },
+            //         error: function (data) {
+            //             alert("Bir sorun oluştu!");
+            //         }
+            //     });
+            // }
+
+            FilterControl();
+        });
+
+        // $("#day-sec").change(function () {
+        //     FilterControl();
+        // });
+
+        $("#filter-sec").change(function () {
+            FilterControl();
+        });
+
+        function ApplyFilter() {
+            var emp = $("#emp-sec option:selected").val();
+            var year = $("#year-sec option:selected").val();
+            var month = $("#month-sec option:selected").val();
+            // var day = $("#day-sec option:selected").val();
+            var filter = $("#filter-sec option:selected").val();
+
+            if (month == 'nan') {
+                month = -1;
+            }
+
+            var url = '@Url.Action("ApplyFilter", "Home")' + '?emp=' + emp + '&year=' + year + '&month=' + month + '&ft=' + filter;
+            $.get(url, function (data) { })
+                .done(function (data) {
+                    $('#cnv-sec').html(data);
+                    ReloadScripts();
+
+                })
+                .fail(function (data) {
+                    alert("Bir sorun oluştu!");
+                })
+        }
+
+        function FilterControl() {
+            var emp = $("#emp-sec option:selected").val();
+            var year = $("#year-sec option:selected").val();
+            var month = $("#month-sec option:selected").val();
+            // var day = $("#day-sec option:selected").val();
+            var filter = $("#filter-sec option:selected").val();
+
+            // if (emp != 'nan' && year != 'nan' && month != 'nan' && day != 'nan' && filter != 'nan') {
+            //     $('#filter-btn').removeAttr('disabled');
+            // }
+            // else {
+            //     $('#filter-btn').attr('disabled',true);
+            // }
+
+            if (emp != 'nan' && year != 'nan' && month != 'nan' && filter != 'nan') {
+                $('#filter-btn').removeAttr('disabled');
+            }
+            else {
+                $('#filter-btn').attr('disabled', true);
+            }
+        }
+
+        function ReloadScripts() {
+            $.getScript("~/js/plugins.min.js", function () { })
+        }
+    </script>
+}

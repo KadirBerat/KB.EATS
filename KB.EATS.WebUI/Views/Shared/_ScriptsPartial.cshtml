@@ -1,0 +1,80 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<script src="~/js/vendors.min.js"></script>
+
+<script src="~/lib/vendors/chartjs/chart.min.js"></script>
+<script src="~/lib/vendors/chartist-js/chartist.min.js"></script>
+<script src="~/lib/vendors/chartist-js/chartist-plugin-tooltip.js"></script>
+<script src="~/lib/vendors/chartist-js/chartist-plugin-fill-donut.min.js"></script>
+
+<script src="~/lib/vendors/data-tables/js/jquery.dataTables.min.js"></script>
+<script src="~/lib/vendors/data-tables/extensions/responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/lib/vendors/data-tables/js/dataTables.select.min.js"></script>
+
+<script src="~/lib/vendors/sweetalert/sweetalert.min.js"></script>
+<script src="~/js/scripts/extra-components-sweetalert.min.js"></script>
+
+
+<script src="~/js/plugins.min.js"></script>
+<script src="~/js/search.min.js"></script>
+<script src="~/js/custom/custom-script.min.js"></script>
+<script src="~/js/scripts/customizer.min.js"></script>
+
+<script src="~/js/toastr.min.js"></script>
+<script src="~/js/scripts/data-tables.min.js"></script>
+
+<script src="~/js/scripts/intro.min.js"></script>
+
+<script src="~/js/scripts/ui-alerts.min.js"></script>
+
+<script>
+    $(".custom-img").on("change", function () {
+        if ($(".custom-img")[0].files.length > 5) {
+            alert("You can select only 5 images");
+            $(this).val("");
+        }
+    });
+</script>
+<script src="~/js/scripts/form-masks.min.js"></script>
+
+<script src="~/js/scripts/form-elements.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.js"></script>
+
+<!-- AntiForegryToken kontrolü ile timer'ın aktifleştirilmesi  -->
+
+<script type="text/javascript">
+    var afToken = $('input[name=__RequestVerificationToken]').val();
+    if (afToken != undefined)
+        $("div.afTimer").removeClass("display-none");
+    else
+        $("div.afTimer").addClass("display-none");
+
+    $(function () {
+
+        var second = 1200;
+        var timerPosition = $("div.afTimer span");
+        var leftSeconds = 1200;
+        var a = 0;
+        $.startTimer = function () {
+            if (second > 60) {
+                second--;
+                leftSeconds = second / 60;
+                a = leftSeconds.toString().split(".");
+                if (a[0] <= 3) {
+                    window.location.reload();
+                }
+                timerPosition.text(a[0]);
+            } else {
+                $("div.afTimer").text("Time Out");
+                window.location.reload();
+            }
+        }
+        leftSeconds = second / 60;
+        timerPosition.text(leftSeconds);
+        setInterval("$.startTimer()", 1200);
+
+    });
+</script>

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace KB.EATS.WebApi.Models.Entities;
+﻿namespace KB.EATS.WebApi.Models.Entities;
 
 public partial class Day
 {
@@ -24,6 +21,8 @@ public partial class Day
     public byte? Rank { get; set; }
 
     public bool? IsAbsenteeism { get; set; }
+
+    public bool? IsCalculated { get; set; }
 
     public virtual Week Week { get; set; } = null!;
 }

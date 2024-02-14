@@ -1,0 +1,18 @@
+﻿.back-btn {
+    background-color: #69a3b9;
+    color: #fff;
+    text-align: center;
+}
+
+    .back-btn:hover {
+        background-color: #6f7271;
+        color: #fff;
+    }
+
+.back-div {
+    float: left !important;
+}
+
+.save-div {
+    float: right !important;
+}

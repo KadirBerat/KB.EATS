@@ -1,9 +1,4 @@
 ﻿using KB.EATS.DataAnalysis.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KB.EATS.DataAnalysis
 {
@@ -12,6 +7,10 @@ namespace KB.EATS.DataAnalysis
         List<ShiftDataModel> shifts = new List<ShiftDataModel>();
         List<ShiftDataModelSimplified> simplifiedShifts = new List<ShiftDataModelSimplified>();
 
+        /// <summary>
+        /// Örnek veri dosyasının okunması ve ShiftDataModel listesine dönüştürülmesi
+        /// </summary>
+        /// <param name="dataPath">dosya yolu</param>
         public SampleDataConversion(string dataPath)
         {
             string[] lines = File.ReadAllLines(dataPath);
@@ -32,15 +31,23 @@ namespace KB.EATS.DataAnalysis
             }
         }
 
+        /// <summary>
+        /// ShiftDataModel listesinin döndürülmesi
+        /// </summary>
+        /// <returns>mesai verileri</returns>
         public List<ShiftDataModel> Get()
         {
             return shifts;
         }
 
+        /// <summary>
+        /// Mesai verilerinin sadeleştirilmesi
+        /// </summary>
+        /// <returns>sadeleştirilmiş mesai verileri</returns>
         public List<ShiftDataModelSimplified> GetSimplified()
         {
-            List<ShiftDataModel>  orderedShifts = shifts.OrderBy(x=>x.Employee).ToList();
-            for (int i = 0; i < orderedShifts.Count; i+=2)
+            List<ShiftDataModel> orderedShifts = shifts.OrderBy(x => x.Employee).ToList();
+            for (int i = 0; i < orderedShifts.Count; i += 2)
             {
                 simplifiedShifts.Add(new ShiftDataModelSimplified()
                 {
@@ -50,7 +57,7 @@ namespace KB.EATS.DataAnalysis
                     Exit = orderedShifts[i + 1]
                 });
             }
-            simplifiedShifts = simplifiedShifts.OrderBy(x=>x.Date).ToList();
+            simplifiedShifts = simplifiedShifts.OrderBy(x => x.Date).ToList();
             return simplifiedShifts;
         }
     }

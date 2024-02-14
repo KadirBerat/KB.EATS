@@ -1,0 +1,242 @@
+﻿@using Newtonsoft.Json
+@model KB.EATS.WebUI.Models.ViewModels.WeekSectionPartialViewModel
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+<table class="Highlight">
+    <thead>
+        <tr>
+            <th>week</th>
+            <th>Rank</th>
+            <th>Efficiency</th>
+            <th>Working Hours</th>
+            <th>Overtime</th>
+            <th>Absenteeism</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var week in Model.Weeks.ToList()) //hafta verilerini sayfaya ekliyorum
+        {
+            <tr>
+                <td>@week.Week</td>
+                <td>@week.Rank</td>
+                <td>%@week.EmployeeEfficiency</td>
+                <td>@week.TotalWorkingHours</td>
+                <td>@week.TotalOvertime</td>
+                <td>@week.TotalAbsenteeism</td>
+                <td>
+                    <!-- Modal Trigger -->
+                    <button id="weeks-modal-trigger-@week.ID" style="display:none;" class="waves-effect waves-light btn modal-trigger" href="#weeks-modal-@week.ID">Show Statistics</button>
+                    <a class="waves-effect waves-light btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1 modal-trigger" onclick="WeeksModalOpen(@week.ID)">Show Statistics</a>
+                    |
+                    <button onclick="WeekSelect(@week.ID, '@week.Week')" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1">Select</button>
+                </td>
+            </tr>
+
+            <!-- Modal Structure -->
+            <div id="weeks-modal-@week.ID" class="week-modal-open-check" style="display:none;">
+                <div class="modal-content">
+                    <h4>Week @week.Week Statistics</h4>
+                    <div>
+                        <canvas id="cnv-crt-w-1-@week.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-w-2-@week.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-w-3-@week.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-w-4-@week.ID"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="cnv-crt-w-5-@week.ID"></canvas>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                var valuesRaw_1_@week.ID = @Html.Raw(JsonConvert.SerializeObject(week.WeekOvertime.Values));
+                var labelsRaw_1_@week.ID = @Html.Raw(JsonConvert.SerializeObject(week.WeekOvertime.Labels));
+                var colors_1_@week.ID = @Html.Raw(JsonConvert.SerializeObject(week.WeekOvertime.Colors));
+
+                const ctx_w_1_@week.ID = document.getElementById('cnv-crt-w-1-' + @week.ID);
+
+                new Chart(ctx_w_1_@week.ID, {
+                    type: 'line',
+                    data: {
+                        labels: labelsRaw_1_@week.ID,
+                    datasets: [{
+                        label: 'Overtime',
+                        data: valuesRaw_1_@week.ID,
+                    fill: false,
+                    backgroundColor: colors_1_@week.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                                                                        }],
+                                                                                                                                                    },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        }
+                    }
+                }
+                                                                                                                                                });
+            </script>
+
+            <script type="text/javascript">
+                var valuesRaw_2_@week.ID = @Html.Raw(JsonConvert.SerializeObject(week.WeekEfficiency.Values));
+                var labelsRaw_2_@week.ID = @Html.Raw(JsonConvert.SerializeObject(week.WeekEfficiency.Labels));
+                var colors_2_@week.ID = @Html.Raw(JsonConvert.SerializeObject(week.WeekEfficiency.Colors));
+
+                const ctx_w_2_@week.ID = document.getElementById('cnv-crt-w-2-' + @week.ID);
+
+                new Chart(ctx_w_2_@week.ID, {
+                    type: 'line',
+                    data: {
+                        labels: labelsRaw_2_@week.ID,
+                    datasets: [{
+                        label: 'Efficiency',
+                        data: valuesRaw_2_@week.ID,
+                    fill: false,
+                    backgroundColor: colors_2_@week.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                                                                            }],
+                                                                                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        }
+                    }
+                }
+                                                                                                                                                    });
+            </script>
+
+            <script type="text/javascript">
+                var valuesRaw_3_@week.ID = @Html.Raw(JsonConvert.SerializeObject(week.WeekWorkingHours.Values));
+                var labelsRaw_3_@week.ID = @Html.Raw(JsonConvert.SerializeObject(week.WeekWorkingHours.Labels));
+                var colors_3_@week.ID = @Html.Raw(JsonConvert.SerializeObject(week.WeekWorkingHours.Colors));
+
+                const ctx_w_3_@week.ID = document.getElementById('cnv-crt-w-3-' + @week.ID);
+
+                new Chart(ctx_w_3_@week.ID, {
+                    type: 'line',
+                    data: {
+                        labels: labelsRaw_3_@week.ID,
+                    datasets: [{
+                        label: 'Working Hours',
+                        data: valuesRaw_3_@week.ID,
+                    fill: false,
+                    backgroundColor: colors_3_@week.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                                                            }],
+                                                                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        }
+                    }
+                }
+                                                                                                                                    });
+            </script>
+
+            <script type="text/javascript">
+                var valuesRaw_4_@week.ID = @Html.Raw(JsonConvert.SerializeObject(week.WeekAbsenteeism.Values));
+                var labelsRaw_4_@week.ID = @Html.Raw(JsonConvert.SerializeObject(week.WeekAbsenteeism.Labels));
+                var colors_4_@week.ID = @Html.Raw(JsonConvert.SerializeObject(week.WeekAbsenteeism.Colors));
+
+                const ctx_w_4_@week.ID = document.getElementById('cnv-crt-w-4-' + @week.ID);
+
+                new Chart(ctx_w_4_@week.ID, {
+                    type: 'line',
+                    data: {
+                        labels: labelsRaw_4_@week.ID,
+                    datasets: [{
+                        label: 'Absenteeism',
+                        data: valuesRaw_4_@week.ID,
+                    fill: false,
+                    backgroundColor: colors_4_@week.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                                                            }],
+                                                                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        },
+                        yAxes: [{
+                            ticks: {
+                                reverse: true // Y ekseni tersine çevirme
+                            }
+                        }]
+                    }
+                }
+                                                                                                                                    });
+            </script>
+
+            <script type="text/javascript">
+                var valuesRaw_5_@week.ID = @Html.Raw(JsonConvert.SerializeObject(week.WeekRank.Values));
+                var labelsRaw_5_@week.ID = @Html.Raw(JsonConvert.SerializeObject(week.WeekRank.Labels));
+                var colors_5_@week.ID = @Html.Raw(JsonConvert.SerializeObject(week.WeekRank.Colors));
+
+                const ctx_w_5_@week.ID = document.getElementById('cnv-crt-w-5-' + @week.ID);
+
+                new Chart(ctx_w_5_@week.ID, {
+                    type: 'line',
+                    data: {
+                        labels: labelsRaw_5_@week.ID,
+                    datasets: [{
+                        label: 'Rank',
+                        data: valuesRaw_5_@week.ID,
+                    fill: false,
+                    backgroundColor: colors_5_@week.ID,
+                    borderColor: 'rgba(255, 206, 86, 0.2)',
+                    tension: 0.1
+                                                                                                                                                            }],
+                                                                                                                                                        },
+                    options: {
+                    maintainAspectRatio: true, // Boyut oranını koruma
+                    responsive: true, // Responsive olma özelliği
+                    aspectRatio: 5, // En-boy oranı
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                        },
+                        yAxes: [{
+                            ticks: {
+                                reverse: true // Y ekseni tersine çevirme
+                            }
+                        }]
+                    }
+                }
+                                                                                                                                                    });
+            </script>
+
+
+        }
+    </tbody>
+</table>

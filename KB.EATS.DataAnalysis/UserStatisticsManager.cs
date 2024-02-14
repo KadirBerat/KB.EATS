@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace KB.EATS.DataAnalysis
+﻿namespace KB.EATS.DataAnalysis
 {
+    /// <summary>
+    /// deprecated
+    /// </summary>
+    [Obsolete("Bu sınıf kullanımdan kaldırıldı", false)]
     public class UserStatisticsManager
     {
         private void YearControl(int userId, short year)

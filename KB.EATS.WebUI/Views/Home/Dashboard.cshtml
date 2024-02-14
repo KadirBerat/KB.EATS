@@ -1,0 +1,309 @@
+﻿@model KB.EATS.WebUI.Models.ViewModels.DashboardWiewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<nav id="sc-nav" style="background-color:#69a3b9;">
+    <div class="nav-wrapper">
+        <div id="selected-colsec" class="col s12">
+            <a id="scn-reset" class="right" asp-action="Dashboard" asp-controller="Home">Reset</a>
+        </div>
+    </div>
+</nav>
+
+<ul class="collapsible">
+    <li id="employee-colsec" class="active">
+        <div class="collapsible-header">
+            <i class="material-icons">
+                person
+            </i>Employees
+        </div>
+        <div class="collapsible-body">
+            <table class="Highlight">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Full Name</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var employee in Model.Employees.ToList()) //çalışanları sayfaya ekledim
+                    {
+                        <tr>
+                            <td>@employee.Username</td>
+                            <td>@employee.FullName</td>
+                            <td>
+                                <button onclick="EmployeeSelect(@employee.ID, '@employee.Username')" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1">Select</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </li>
+    <li id="year-colsec" class="">
+        <div class="collapsible-header">
+            <i class="material-icons">
+                calendar_month
+            </i>Years
+        </div>
+        <div class="collapsible-body">
+            <div id="years-section">Please select employee before.</div>
+        </div>
+    </li>
+    <li id="month-colsec">
+        <div class="collapsible-header">
+            <i class="material-icons">
+                date_range
+            </i>Months
+        </div>
+        <div class="collapsible-body">
+            <div id="months-section">Please select year before.</div>
+        </div>
+    </li>
+    <li id="week-colsec">
+        <div class="collapsible-header">
+            <i class="material-icons">
+                today
+            </i>Weeks
+        </div>
+        <div class="collapsible-body">
+            <div id="weeks-section">Please select month before.</div>
+        </div>
+    </li>
+    <li id="day-colsec">
+        <div class="collapsible-header">
+            <i class="material-icons">
+                calendar_today
+            </i>Days
+        </div>
+        <div class="collapsible-body">
+            <div id="days-section">Please select week before.</div>
+        </div>
+    </li>
+</ul>
+
+
+
+<!-- veri seçimi ve bu verilerin yüklenerek içerisindeki modal'ların açılmasına yönelik scriptler genel olarak hepsinde jquery ve ajax kullandım  -->
+@section PageScripts {
+    <script>
+        $(document).ready(function () {
+            $('.collapsible').collapsible({
+                accordion: true
+            });
+        });
+    </script>
+    <script>
+        function DaysModalOpen(id) {
+            if ($('#days-modal-' + id).hasClass('day-modal-open-check')) {
+                $('#days-modal-' + id).removeClass('day-modal-open-check');
+                $('#days-modal-' + id).addClass('modal');
+                $('#days-modal-' + id).css('display', 'block');
+                $('#days-modal-' + id).modal();
+            }
+            $('#days-modal-trigger-' + id).click();
+        }
+
+        function WeekSelect(id, wk) {
+            var url = '@Url.Action("WeekSelect", "Home")/' + id;
+            $.get(url, function (data) { })
+                .done(function (data) {
+                    $('#week-colsec').removeClass('active');
+                    $('#week-colsec').css('display', 'none');
+                    $('#week-colsec').remove();
+
+                    $('#days-section').html(data);
+                    ReloadScripts();
+                    $('#day-colsec').addClass('active');
+                    $('#day-colsec .collapsible-body').css('display', 'block');
+
+                    $('#scn-reset').remove();
+
+                    var week_div = document.getElementById('selected-colsec');
+                    var week_tag = document.createElement('a');
+                    week_tag.setAttribute('id', 'selected-week');
+                    week_div.appendChild(week_tag);
+
+                    $('#selected-week').addClass('breadcrumb');
+                    $('#selected-week').removeAttr('href');
+                    $('#selected-week').html('{' + wk + '}');
+
+                    var rst_tag_1 = document.createElement('a');
+                    rst_tag_1.setAttribute('id', 'scn-reset');
+                    rst_tag_1.setAttribute('href', '/Home/Dashboard');
+                    week_div.appendChild(rst_tag_1);
+                    $('#scn-reset').addClass('right');
+                    $('#scn-reset').html('Reset');
+
+                })
+                .fail(function (data) {
+                    alert("Bir sorun oluştu!");
+                })
+        }
+
+        function WeeksModalOpen(id) {
+            if ($('#weeks-modal-' + id).hasClass('week-modal-open-check')) {
+                $('#weeks-modal-' + id).removeClass('week-modal-open-check');
+                $('#weeks-modal-' + id).addClass('modal');
+                $('#weeks-modal-' + id).css('display', 'block');
+                $('#weeks-modal-' + id).modal();
+            }
+            $('#weeks-modal-trigger-' + id).click();
+        }
+
+        function MonthSelect(id, mnt) {
+            var url = '@Url.Action("MonthSelect", "Home")/' + id;
+            $.get(url, function (data) { })
+                .done(function (data) {
+                    $('#month-colsec').removeClass('active');
+                    $('#month-colsec').css('display', 'none');
+                    $('#month-colsec').remove();
+
+                    $('#weeks-section').html(data);
+                    ReloadScripts();
+                    $('#week-colsec').addClass('active');
+                    $('#week-colsec .collapsible-body').css('display', 'block');
+
+                    $('#scn-reset').remove();
+
+                    var month_div = document.getElementById('selected-colsec');
+                    var month_tag = document.createElement('a');
+                    month_tag.setAttribute('id', 'selected-month');
+                    month_div.appendChild(month_tag);
+
+                    $('#selected-month').addClass('breadcrumb');
+                    $('#selected-month').removeAttr('href');
+                    $('#selected-month').html(mnt);
+
+                    var rst_tag_1 = document.createElement('a');
+                    rst_tag_1.setAttribute('id', 'scn-reset');
+                    rst_tag_1.setAttribute('href', '/Home/Dashboard');
+                    month_div.appendChild(rst_tag_1);
+                    $('#scn-reset').addClass('right');
+                    $('#scn-reset').html('Reset');
+
+                })
+                .fail(function (data) {
+                    alert("Bir sorun oluştu!");
+                })
+        }
+
+        function MonthsModalOpen(id) {
+            if ($('#months-modal-' + id).hasClass('month-modal-open-check')) {
+                $('#months-modal-' + id).removeClass('month-modal-open-check');
+                $('#months-modal-' + id).addClass('modal');
+                $('#months-modal-' + id).css('display', 'block');
+                $('#months-modal-' + id).modal();
+            }
+            $('#months-modal-trigger-' + id).click();
+        }
+
+        function YearSelect(id, yr) {
+            var url = '@Url.Action("YearSelect", "Home")/' + id;
+            $.get(url, function (data) { })
+                .done(function (data) {
+                    $('#year-colsec').removeClass('active');
+                    $('#year-colsec').css('display', 'none');
+                    $('#year-colsec').remove();
+
+                    $('#months-section').html(data);
+                    ReloadScripts();
+                    $('#month-colsec').addClass('active');
+                    $('#month-colsec .collapsible-body').css('display', 'block');
+
+                    $('#scn-reset').remove();
+
+                    var year_div = document.getElementById('selected-colsec');
+                    var year_tag = document.createElement('a');
+                    year_tag.setAttribute('id', 'selected-year');
+                    year_div.appendChild(year_tag);
+
+                    $('#selected-year').addClass('breadcrumb');
+                    $('#selected-year').removeAttr('href');
+                    $('#selected-year').html(yr);
+
+                    var rst_tag_1 = document.createElement('a');
+                    rst_tag_1.setAttribute('id', 'scn-reset');
+                    rst_tag_1.setAttribute('href', '/Home/Dashboard');
+                    year_div.appendChild(rst_tag_1);
+                    $('#scn-reset').addClass('right');
+                    $('#scn-reset').html('Reset');
+
+                })
+                .fail(function (data) {
+                    alert("Bir sorun oluştu!");
+                })
+        }
+
+        function YearsModalOpen(id) {
+            if ($('#years-modal-' + id).hasClass('year-modal-open-check')) {
+                $('#years-modal-' + id).removeClass('year-modal-open-check');
+                $('#years-modal-' + id).addClass('modal');
+                $('#years-modal-' + id).css('display', 'block');
+                $('#years-modal-' + id).modal();
+            }
+            $('#years-modal-trigger-' + id).click();
+        }
+
+        function EmployeeSelect(id, emp) {
+            var url = '@Url.Action("EmployeeSelect", "Home")/' + id;
+            $.get(url, function (data) { })
+                .done(function (data) {
+                    $('#years-section').html(data);
+                    ReloadScripts();
+                    $('#employee-colsec').removeClass('active');
+                    $('#employee-colsec').css('display', 'none');
+                    $('#year-colsec').addClass('active');
+                    $('#year-colsec .collapsible-body').css('display', 'block');
+
+                    $('#employee-colsec').remove();
+
+                    // $('#sc-nav').css('display', 'block');
+                    $('#scn-reset').remove();
+
+
+                    var employee_div = document.getElementById('selected-colsec');
+                    var employee_tag = document.createElement('a');
+                    employee_tag.setAttribute('id', 'selected-employee');
+                    employee_div.appendChild(employee_tag);
+
+                    $('#selected-employee').addClass('breadcrumb');
+                    $('#selected-employee').removeAttr('href');
+                    $('#selected-employee').html(emp);
+
+                    var rst_tag_1 = document.createElement('a');
+                    rst_tag_1.setAttribute('id', 'scn-reset');
+                    rst_tag_1.setAttribute('href', '/Home/Dashboard');
+                    employee_div.appendChild(rst_tag_1);
+                    $('#scn-reset').addClass('right');
+                    $('#scn-reset').html('Reset');
+                })
+                .fail(function (data) {
+                    alert("Bir sorun oluştu!");
+                })
+
+            EmpSelect(emp);
+        }
+
+        function ReloadScripts() {
+            $.getScript("~/js/plugins.min.js", function () { })
+        }
+
+    </script>
+}
+
+@section Noty {
+                                                                            $(document).ready(function () {
+                                                                            if ("@ViewBag.Error"!="")
+                                                                            toastr.error("Hata","@ViewBag.Error")
+                                                                            })
+                                                                            $(document).ready(function () {
+                                                                            if ("@ViewBag.Success" != "")
+                                                                            toastr.success("Başarılı","@ViewBag.Success")
+    })
+
+}

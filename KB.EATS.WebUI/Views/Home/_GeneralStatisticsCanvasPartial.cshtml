@@ -1,0 +1,71 @@
+﻿@using Newtonsoft.Json
+@model KB.EATS.WebUI.Models.ViewModels.GeneralStatisticsPartialViewModel
+
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<div id="sec-data" class="row">
+    <div class="col m12">
+        <div class="card padding-4 animate fadeLeft">
+            <div class="row">
+                <div class="col m2">
+                    <h5 class="mb-0">@Model.WorkingHours</h5>
+                    <p class="no-margin">Working Hours</p>
+                </div>
+                <div class="col m2">
+                    <h5 class="mb-0">@Model.Overtime</h5>
+                    <p class="no-margin">Overtime</p>
+                </div>
+                <div class="col m2">
+                    <h5 class="mb-0">@Model.Absenteeism</h5>
+                    <p class="no-margin">Absenteeism</p>
+                </div>
+                <div class="col m2">
+                    <h5 class="mb-0">@Model.Efficiency</h5>
+                    <p class="no-margin">Efficiency</p>
+                </div>
+                <div class="col m2">
+                    <h5 class="mb-0">@Model.Rank</h5>
+                    <p class="no-margin">Rank</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <canvas id="cnv-crt-gs-@Model.ID"></canvas>
+    </div>
+</div>
+
+<!-- grafiği oluşturan script  -->
+<script type="text/javascript">
+    var valuesRaw_@Model.ID = @Html.Raw(JsonConvert.SerializeObject(Model.Values));
+    var labelsRaw_@Model.ID = @Html.Raw(JsonConvert.SerializeObject(Model.Labels));
+
+    const ctx_@Model.ID = document.getElementById('cnv-crt-gs-' + @Model.ID);
+
+    new Chart(ctx_@Model.ID, {
+        type: 'line',
+        data: {
+            labels: labelsRaw_@Model.ID,
+        datasets: [{
+            label: '@Model.Title',
+            data: valuesRaw_@Model.ID,
+        fill: false,
+        backgroundColor: 'rgba(255, 99, 132, 0.8)',
+        borderColor: 'rgba(255, 99, 132, 0.8)',
+        tension: 0.1
+                }],
+            },
+        options: {
+        maintainAspectRatio: true, // Boyut oranını koruma
+        responsive: true, // Responsive olma özelliği
+        aspectRatio: 4, // En-boy oranı
+        scales: {
+            y: {
+                beginAtZero: false,
+            }
+        }
+    }
+        });
+</script>
